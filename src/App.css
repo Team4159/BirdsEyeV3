@@ -1,0 +1,190 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.card{
+  background:var(--card);
+  border-radius:14px;
+  padding:18px;
+  margin-bottom:18px;
+  box-shadow:0 4px 12px rgba(0,0,0,.2);
+}
+
+.navBar{
+  position:sticky;
+  top:0;
+  z-index:10;
+
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+
+  padding:10px;
+  margin-bottom:16px;
+
+  background:var(--card);
+  border-radius:12px;
+}
+
+.navBar button{
+  flex:1;
+}
+
+input, select, textarea, .slider{
+  width:100%;
+  padding:12px;
+  font-size:16px;
+  border-radius:8px;
+  border:1px solid var(--border);
+  background:var(--input);
+  color:var(--text);
+}
+
+textarea{
+  min-height:80px;
+}
+
+h1{
+  font-size:1.6rem;
+  margin-bottom:10px;
+}
+
+h3{
+  margin-top:12px;
+  margin-bottom:6px;
+  font-size:1rem;
+}
+
+.datatable{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-top:6px;
+  flex-wrap: wrap; /* allow wrapping if too wide */
+  gap:6px;
+}
+
+.datatable button{
+  flex:1;
+  min-height:44px;
+  font-weight:600;
+}
+
+.datatable span{
+  font-size:20px;
+  font-weight:bold;
+  min-width:40px;
+  text-align:center;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+button{
+  background:var(--button);
+  color:var(--text);
+  border:none;
+  border-radius:8px;
+  padding:10px 14px;
+  font-size:14px;
+  cursor:pointer;
+  transition:background .15s ease;
+  position:relative;
+  overflow:hidden;
+}
+
+button::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:white;
+  opacity:0;
+  transition:opacity .2s;
+}
+
+button:active::after{
+  opacity:.15;
+}
+
+button:hover{
+  background:var(--button-hover);
+}
+
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+.redAlliance{
+  background:#b91c1c;
+  color:white;
+}
+
+.blueAlliance{
+  background:#1d4ed8;
+  color:white;
+}
+
+.saveButton{
+  width:100%;
+  padding:16px;
+  font-size:18px;
+  font-weight:600;
+
+  border:none;
+  border-radius:12px;
+
+  background:var(--accent);
+  color:white;
+
+  margin-top:16px;
+}
+
+.slidecontainer {
+  width: 100%; /* ensures the container doesn't exceed card width */
+  margin: 12px 0; /* optional spacing */
+}
+
+.slider {
+  width: 100%; /* make slider fill the container */
+  margin: 6px 0; /* optional spacing */
+}
+
+.teamGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 columns */
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.teamButton {
+  padding: 12px;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.teamButton.red {
+  background-color: #b91c1c;
+  color: white;
+}
+
+.teamButton.blue {
+  background-color: #1d4ed8;
+  color: white;
+}
+
+.teamButton.selected {
+  border-color: yellow; /* highlight selected */
+  transform: scale(1.05);
+}
