@@ -224,9 +224,8 @@ function App() {
   };
 
   async function populateEvents(){
-    //TODO change to 2026 when the data actually exists
     try{
-      setEvents(await fetchTBAData(tbaKey, "/events/2025/keys"));
+      setEvents(await fetchTBAData(tbaKey, "/events/2026/keys"));
     } catch(error){
       console.error('Failed to set matches: ', error);
     }

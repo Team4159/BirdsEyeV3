@@ -1,4 +1,4 @@
-import { getDocs, collection, addDoc, setDoc, doc, Firestore } from "firebase/firestore";
+import { getDocs, collection, Firestore } from "firebase/firestore";
 
 /** @param extension extension for tba API */
 export async function fetchScoutedData(firestore: Firestore){

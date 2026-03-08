@@ -31,7 +31,7 @@ export const Counter: React.FC<CounterProps> = ({
       <span>{value}</span>
 
       {/* Increment buttons */}
-      {increments.map((inc) => (
+      {increments.reverse().map((inc) => (
         <button
           key={`plus-${inc}`}
           onClick={() => onChange(value + inc)}
