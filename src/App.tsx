@@ -9,6 +9,8 @@ import { getFirestore, collection, addDoc } from "firebase/firestore";
 import { Counter } from './ui/counter'
 import { fetchTBAData } from './tba/fetchTBAData'
 import { compareMatchKeys, formatMatchLabel } from './util/MatchUtil';
+import Select from 'react-select';
+import { selectStyles } from './ui/SelectStyles';
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -30,7 +32,7 @@ function App() {
   const [currentPage, setCurrentPage] = useState("tbaKeyInput");
   const [tbaKey, setTBAKey] = useState("");
   const [darkMode, setDarkMode] = useState(true);
-  const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState<string[]>([]);
   const [currentEvent, setCurrentEvent] = useState("");
   const [matches, setMatches] = useState([]);
   const [currentMatch, setCurrentMatch] = useState("");
@@ -336,39 +338,57 @@ function App() {
           <h1>Match Scouting</h1>
           <div>
             <h3>Event</h3>
-            <select
-              value={currentEvent}
-              onChange={(e) => {
-                console.log("event chooser onchange")
-                //remove saved matches
-                saveCurrentEvent(e.target.value);
+
+            <Select
+              styles={selectStyles}
+              value={
+                currentEvent
+                  ? { value: currentEvent, label: currentEvent }
+                  : null
+              }
+
+              options={events.map(event => ({
+                value: event,
+                label: event
+              }))}
+
+              onChange={(selected) => {
+                const eventValue = selected?.value || "";
+
+                saveCurrentEvent(eventValue);
                 saveCurrentMatch("");
                 saveCurrentTeam("");
               }}
-            >
-              {events.map(event => {
-                return <option key={event} value={event}>{event}</option>
-              })}
-            </select>
+            />
           </div>
 
           <div>
             <h3>Match</h3>
-            <select
-              value={currentMatch}
-              onChange={(e) => {
-                console.log("match chooser onchange")
-                saveCurrentMatch(e.target.value);
+
+            <Select
+              styles={selectStyles}
+
+              options={matches.map(match => ({
+                value: match,
+                label: formatMatchLabel(match)
+              }))}
+
+              value={
+                currentMatch
+                  ? {
+                      value: currentMatch,
+                      label: formatMatchLabel(currentMatch)
+                    }
+                  : null
+              }
+
+              onChange={(selected) => {
+                const matchValue = selected?.value || "";
+
+                saveCurrentMatch(matchValue);
                 saveCurrentTeam("");
               }}
-            >
-              {matches.map(match => {
-                return <option key={match} value={match}>{formatMatchLabel(match)}</option>
-              })}
-              <option value="" disabled hidden>
-                Select a Match
-              </option>
-            </select>
+            />
           </div>
 
           <div>
