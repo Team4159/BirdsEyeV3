@@ -8,7 +8,7 @@ import { initializeApp } from "firebase/app";
 import { getFirestore, collection, addDoc } from "firebase/firestore";
 import { Counter } from './ui/counter'
 import { fetchTBAData } from './tba/fetchTBAData'
-import { compareMatchKeys, formatMatchLabel } from './util/MatchUtil';
+import { compareMatchKeys, formatMatchLabel, getNextMatch } from './util/MatchUtil';
 import Select from 'react-select';
 import { selectStyles } from './ui/SelectStyles';
 
@@ -91,7 +91,6 @@ function App() {
     try {
       const result = localStorage.getItem('tbaKey');
       if (result) {
-        console.log(result);
         setTBAKey(result);
       }
     } catch (error) {
@@ -112,7 +111,6 @@ function App() {
   const loadDarkMode = async () => {
     try {
       const result = localStorage.getItem('darkMode');
-      console.log(result);
       if (result === "light") {
         setDarkMode(false);
       }
@@ -139,7 +137,6 @@ function App() {
     try {
       const result = localStorage.getItem('currentEvent');
       if (result) {
-        console.log(result);
         setCurrentEvent(result);
       }
     } catch (error) {
@@ -161,7 +158,6 @@ function App() {
     try {
       const result = localStorage.getItem('currentMatch');
       if (result) {
-        console.log("current match loaded: " + result);
         setCurrentMatch(result);
       }
     } catch (error) {
@@ -183,7 +179,6 @@ function App() {
     try {
       const result = localStorage.getItem('currentTeam');
       if (result) {
-        console.log("current team loaded: " + result);
         setCurrentTeam(result);
       }
     } catch (error) {
@@ -205,8 +200,6 @@ function App() {
     try {
       const result = localStorage.getItem('currentMatchScoutingData');
       if (result) {
-        console.log("match scouting data loaded: " );
-        console.log(result)
         setMatchScoutingData(JSON.parse(result));
       }
     } catch (error) {
@@ -215,7 +208,6 @@ function App() {
   };
 
   const saveMatchScoutingData = async (matchScoutingData: any) => {
-    console.log("saveMatchScoutingData");
     try {
       localStorage.setItem("currentMatchScoutingData", JSON.stringify(matchScoutingData));
       setMatchScoutingData(matchScoutingData);
@@ -275,6 +267,10 @@ function App() {
             matchKey: currentMatch,
           });
         resetMatchScoutingData();
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth' // for a smooth scrolling effect
+        });
     }
     catch(e){
         console.error("Error adding document: " + e);
@@ -282,6 +278,9 @@ function App() {
   }
 
   function resetMatchScoutingData(){
+    console.log(currentMatch);
+    saveCurrentMatch(getNextMatch(currentMatch, matches));
+    saveCurrentTeam("");
     saveMatchScoutingData({
       autoFuels: 0,
       autoNotes: "",
@@ -324,9 +323,6 @@ function App() {
             value={tbaKey}
             onChange={(e) => {
               saveTBAKey(e.target.value);
-
-              console.log(e.target.value);
-              console.log(tbaKey);
             }}
             placeholder="Enter your TBA API key"
           />

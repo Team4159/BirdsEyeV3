@@ -56,6 +56,18 @@ export function getMatchNumberFromKey(key: string): number {
   return Number(matchNumber);
 }
 
+export function getNextMatch(key: string, matchKeys: string[]): string{
+  const currentMatchNumber = getMatchNumberFromKey(key);
+  const currentMatchType = getMatchTypeFromKey(key);
+  var matchKey = "";
+  matchKeys.forEach((key) => {
+    if(getMatchNumberFromKey(key) === currentMatchNumber + 1 && getMatchTypeFromKey(key) === currentMatchType){
+      matchKey = key;
+    }
+  })
+  return matchKey;
+}
+
 export function getSetNumberFromKey(key: string): number | null {
   const matchPart = key.split("_")[1];
 
