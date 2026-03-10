@@ -11,6 +11,9 @@ import { fetchTBAData } from './tba/fetchTBAData'
 import { compareMatchKeys, formatMatchLabel, getNextMatch } from './util/MatchUtil';
 import Select from 'react-select';
 import { selectStyles } from './ui/SelectStyles';
+import { getAuth } from 'firebase/auth';
+import { Login } from './ui/Login';
+import { logOut } from './firebase/auth';
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -24,12 +27,13 @@ appId: "1:345042135934:web:3499e51bc4ebde3d5e212f",
 measurementId: "G-Q5EL55034N"
 };
 
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const firestore = getFirestore(app);
 
 function App() {
-  const [currentPage, setCurrentPage] = useState("tbaKeyInput");
+  const [currentPage, setCurrentPage] = useState("login");
   const [tbaKey, setTBAKey] = useState("");
   const [darkMode, setDarkMode] = useState(true);
   const [events, setEvents] = useState<string[]>([]);
@@ -265,6 +269,7 @@ function App() {
             ...matchScoutingData,
             team: currentTeam,
             matchKey: currentMatch,
+            email: getAuth().currentUser?.email
           });
         resetMatchScoutingData();
         window.scrollTo({
@@ -298,22 +303,36 @@ function App() {
 
   return (
     <>
-      <nav className = "navBar">
-        <button 
-          onClick={() => {saveDarkMode(!darkMode)}}>
-          {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-        </button>
+      {currentPage === "login" && (
+        <Login onChange={() => setCurrentPage("matchScouting")}></Login>
+      )}
 
-        <button 
-          onClick={() => {setCurrentPage("tbaKeyInput")}}>
-          {<Settings size={20}/>}
-        </button>
+      {currentPage !== "login" && (
+        <nav className = "navBar">
+          <button 
+            onClick={() => {saveDarkMode(!darkMode)}}>
+            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+          </button>
 
-        <button 
-          onClick={() => {setCurrentPage("matchScouting")}}>
-          match scouting
-        </button>
-      </nav>
+          <button 
+            onClick={() => {setCurrentPage("tbaKeyInput")}}>
+            {<Settings size={20}/>}
+          </button>
+
+          <button 
+            onClick={() => {setCurrentPage("matchScouting")}}>
+            match scouting
+          </button>
+
+          <button 
+            onClick={() => {
+              logOut();
+              setCurrentPage("login");
+            }}>
+            Log Out
+          </button>
+        </nav>
+      )}
 
       {currentPage === "tbaKeyInput" && (
         <div className = {cardClass}>
