@@ -12,8 +12,8 @@ import { compareMatchKeys, formatMatchLabel, getNextMatch } from './util/MatchUt
 import Select from 'react-select';
 import { selectStyles } from './ui/SelectStyles';
 import { getAuth } from 'firebase/auth';
-import { Login } from './ui/Login';
-import { logOut } from './firebase/auth';
+import { GoogleLogin } from '@react-oauth/google';
+import { logInWithGoogle, logOut } from './firebase/auth';
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -304,7 +304,15 @@ function App() {
   return (
     <>
       {currentPage === "login" && (
-        <Login onChange={() => setCurrentPage("matchScouting")}></Login>
+        <GoogleLogin
+          onSuccess={(credentialResponse) => {
+            logInWithGoogle(credentialResponse);
+            setCurrentPage("matchScouting");
+          }}
+          onError={() => {
+            console.log("Login Failed");
+          }}
+        />
       )}
 
       {currentPage !== "login" && (
