@@ -5,7 +5,7 @@ import './App.css'
 //firebase
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, addDoc } from "firebase/firestore";
+import { getFirestore, collection, addDoc, setDoc, doc } from "firebase/firestore";
 import { Counter } from './ui/counter'
 import { fetchTBAData } from './tba/fetchTBAData'
 import { compareMatchKeys, formatMatchLabel, getNextMatch } from './util/MatchUtil';
@@ -13,7 +13,7 @@ import Select from 'react-select';
 import { selectStyles } from './ui/SelectStyles';
 import { getAuth } from 'firebase/auth';
 import { GoogleLogin } from '@react-oauth/google';
-import { logInWithGoogle, logOut } from './firebase/auth';
+import { logInWithGoogle, logOut } from './firebase/Auth';
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -261,24 +261,57 @@ function App() {
     }
   }
 
-  async function sendData(){
-    if(currentEvent === "" || currentMatch === "" || currentTeam === "") return;
-    try{
-        await addDoc(collection(firestore, "matches"), 
-          {
-            ...matchScoutingData,
-            team: currentTeam,
-            matchKey: currentMatch,
-            email: getAuth().currentUser?.email
-          });
-        resetMatchScoutingData();
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth' // for a smooth scrolling effect
-        });
-    }
-    catch(e){
-        console.error("Error adding document: " + e);
+  async function sendData() {
+    if (currentEvent === "" || currentMatch === "" || currentTeam === "") return;
+
+    try {
+      // ✅ Ensure event exists
+      await setDoc(
+        doc(firestore, "events", currentEvent),
+        { name: currentEvent },
+        { merge: true }
+      );
+
+      // ✅ Ensure team exists
+      await setDoc(
+        doc(firestore, "events", currentEvent, "teams", currentTeam),
+        { name: currentTeam },
+        { merge: true }
+      );
+
+      // ✅ Ensure match exists
+      await setDoc(
+        doc(firestore, "events", currentEvent, "teams", currentTeam, "matches", currentMatch),
+        { name: currentMatch},
+        { merge: true }
+      );
+
+      // ✅ Now add dataset
+      await addDoc(
+        collection(
+          firestore,
+          "events",
+          currentEvent,
+          "teams",
+          currentTeam,
+          "matches",
+          currentMatch,
+          "datasets"
+        ),
+        {
+          ...matchScoutingData,
+          email: getAuth().currentUser?.email
+        }
+      );
+
+      resetMatchScoutingData();
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    } catch (e) {
+      console.error("Error adding document: " + e);
     }
   }
 
