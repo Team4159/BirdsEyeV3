@@ -179,9 +179,8 @@ button:focus-visible {
 .slider {
     width: 100%; /* make slider fill the container */
     margin: 12px 0; /* optional spacing */
-    margin-top: -12px;
+    margin-top: 0px;
     padding: 0px;
-    display: block;
 }
 
 .teamGrid {
