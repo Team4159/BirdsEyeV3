@@ -11,7 +11,7 @@ export async function verifyTbaKey(
       headers: {
         "X-TBA-Auth-Key": tbaKey,
       },
-      cache: "no-store",
+      cache: "reload",
     });
     if (!response.ok) throw new Error();
     return [true, null];
