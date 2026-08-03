@@ -120,12 +120,17 @@ button::after {
     transition: opacity 0.2s;
 }
 
-button:active::after {
+button:not(:disabled):active::after {
     opacity: 0.15;
 }
 
 button:hover {
     background: var(--button-hover);
+}
+
+button:disabled {
+    background: var(--button-hover);
+    cursor: not-allowed;
 }
 
 button:focus {
@@ -246,4 +251,16 @@ button:focus-visible {
     font-size: 14px;
     margin-top: 6px;
     font-weight: 500;
+}
+
+.animate-spin {
+    animation: spin 1s cubic-bezier(0.17, 0.67, 0.83, 0.67) infinite;
+}
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }

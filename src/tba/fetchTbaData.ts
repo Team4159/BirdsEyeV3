@@ -10,8 +10,9 @@ export async function fetchTbaData(
   if (cache === undefined) {
     cache = false;
   }
+  let response = null;
   try {
-    const response = await fetch(
+    response = await fetch(
       `https://www.thebluealliance.com/api/v3${extension}`,
       {
         headers: {
@@ -24,7 +25,9 @@ export async function fetchTbaData(
     return await response.json();
   } catch (error) {
     console.error("TBA fetch error:", error);
-    alert(`Error fetching data from The Blue Alliance`);
+    alert(
+      `Error fetching data from The Blue Alliance (Status ${response?.status})`,
+    );
     return null;
   }
 }

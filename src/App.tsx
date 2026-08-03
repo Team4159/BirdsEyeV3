@@ -1,5 +1,13 @@
-import { useState, useEffect, useCallback } from "react";
-import { Sun, Moon, Settings, Save, Search, LogOut } from "lucide-react";
+import { useState, useEffect, useCallback, useRef } from "react";
+import {
+  Sun,
+  Moon,
+  Settings,
+  Save,
+  Search,
+  LogOut,
+  Loader2,
+} from "lucide-react";
 import "./App.css";
 
 //firebase
@@ -18,17 +26,21 @@ import {
   compareMatchKeys,
   formatMatchLabel,
   getNextMatch,
-} from "./util/MatchUtil";
+} from "./util/matchUtil";
 import Select from "react-select";
-import { selectStyles } from "./ui/SelectStyles";
-import { getAuth } from "firebase/auth";
+import { selectStyles } from "./ui/selectStyles";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  signInWithCredential,
+} from "firebase/auth";
 import { GoogleLogin } from "@react-oauth/google";
-import { logInWithGoogle, logOut } from "./firebase/Auth";
+import { logOut } from "./firebase/auth";
 import { verifyTbaKey } from "./tba/verifyTbaKey";
-import { applyDarkMode } from "./ui/Theme";
+import { applyDarkMode } from "./ui/theme";
 
 // Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyCk4X0qVprdIYWoMdtTnSs0qVAqR_zcQBY",
   authDomain: "scoutingapp-bd57b.firebaseapp.com",
@@ -42,8 +54,10 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const firestore = getFirestore(app);
+const auth = getAuth(app);
 
 function App() {
+  const [autoLoginDone, setAutoLoginDone] = useState(false);
   const [currentPage, setCurrentPage] = useState("login");
   const [tbaKey, setTbaKey] = useState("");
   const [darkMode, setDarkMode] = useState(true);
@@ -70,6 +84,8 @@ function App() {
     driverRating: 3.0,
     driverNotes: "",
   });
+  const [matchScoutingDataSending, setMatchScoutingDataSending] =
+    useState(false);
   const [matchScoutingErrorMessage, setMatchScoutingErrorMessage] = useState<
     string | null
   >(null);
@@ -216,20 +232,20 @@ function App() {
   };
 
   const gatekeepMatchScoutingPage = useCallback(async () => {
-    try {
-      queueMicrotask(async () => {
-        setMatchScoutingErrorMessage("Verifying TBP API key...");
+    queueMicrotask(async () => {
+      try {
+        setMatchScoutingErrorMessage("Verifying TBA API key...");
         const [, message] = await verifyTbaKey(tbaKey);
         setMatchScoutingErrorMessage(message);
-      });
-    } catch (error) {
-      console.error("Failed to verify TBA key: ", error);
-    }
+      } catch (error) {
+        console.error("Failed to verify TBA key: ", error);
+      }
+    });
   }, [tbaKey]);
 
   const populateEvents = useCallback(() => {
-    try {
-      queueMicrotask(async () => {
+    queueMicrotask(async () => {
+      try {
         setEventsLoaded(false);
         const eventsArray: { key: string; name: string }[] = await fetchTbaData(
           tbaKey,
@@ -244,15 +260,15 @@ function App() {
           eventsArray.map((event) => [event.key, event.name]),
         );
         setEvents(eventsMap);
-      });
-    } catch (error) {
-      console.error("Failed to set matches: ", error);
-    }
+      } catch (error) {
+        console.error("Failed to set matches: ", error);
+      }
+    });
   }, [tbaKey]);
 
   const populateMatches = useCallback(() => {
-    try {
-      queueMicrotask(async () => {
+    queueMicrotask(async () => {
+      try {
         setMatchesLoaded(false);
         let matches = await fetchTbaData(
           tbaKey,
@@ -267,26 +283,26 @@ function App() {
           return compareMatchKeys(a, b);
         });
         setMatches(matches);
-      });
-    } catch (error) {
-      console.error("Failed to set matches: ", error);
-    }
+      } catch (error) {
+        console.error("Failed to set matches: ", error);
+      }
+    });
   }, [currentEvent, tbaKey]);
 
   const populateTeams = useCallback(() => {
-    try {
-      queueMicrotask(async () => {
-        //raw match data from tba
+    queueMicrotask(async () => {
+      try {
+        const teamsData = { redAlliance: [], blueAlliance: [] };
+        setTeams(teamsData);
         setMatchDataLoaded(false);
+        //raw match data from tba
         const matchData = await fetchTbaData(
           tbaKey,
           `/match/${currentMatch}/simple`,
         );
         setMatchDataLoaded(true);
-        //fetch alliance data
-        const teamsData = { redAlliance: [], blueAlliance: [] };
 
-        //get general alliance objects
+        //fetch alliance data
         if (matchData !== null) {
           const redAlliance = matchData.alliances.red.team_keys;
           const blueAlliance = matchData.alliances.blue.team_keys;
@@ -295,18 +311,25 @@ function App() {
           teamsData.blueAlliance = blueAlliance;
         }
         setTeams(teamsData);
-      });
-    } catch (error) {
-      console.error("Failed to set matches: ", error);
-    }
+      } catch (error) {
+        console.error("Failed to set matches: ", error);
+      }
+    });
   }, [currentMatch, tbaKey]);
 
+  function canSendData() {
+    return (
+      !matchScoutingDataSending && currentEvent && currentMatch && currentTeam
+    );
+  }
+
   async function sendData() {
-    if (currentEvent === "" || currentMatch === "" || currentTeam === "") {
+    if (!canSendData()) {
       return;
     }
 
     try {
+      setMatchScoutingDataSending(true);
       // ✅ Ensure event exists
       await setDoc(
         doc(firestore, "events", currentEvent),
@@ -350,18 +373,31 @@ function App() {
         ),
         {
           ...matchScoutingData,
-          email: getAuth().currentUser?.email,
+          email: auth.currentUser?.email,
         },
       );
 
       resetMatchScoutingData();
 
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
+      setMatchScoutingDataSending(false);
+
+      queueMicrotask(() => {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
       });
     } catch (e) {
       console.error("Error adding document: " + e);
+      alert("Error saving match");
+    }
+  }
+
+  function openHomePage(tbaKeyOverride?: string) {
+    if ((tbaKeyOverride || tbaKey) === "") {
+      setCurrentPage("tbaKeyInput");
+    } else {
+      setCurrentPage("matchScouting");
     }
   }
 
@@ -375,6 +411,27 @@ function App() {
     loadCurrentTeam();
   }, []);
 
+  // auto login
+  {
+    const tbaKeyRef = useRef(tbaKey);
+
+    useEffect(() => {
+      tbaKeyRef.current = tbaKey;
+    }, [tbaKey]);
+
+    useEffect(() => {
+      onAuthStateChanged(auth, (user) => {
+        setAutoLoginDone(true);
+        if (user != null) {
+          openHomePage(tbaKeyRef.current);
+        } else {
+          setCurrentPage("login");
+        }
+      });
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+  }
+
   // match scouting page effect
   useEffect(() => {
     gatekeepMatchScoutingPage();
@@ -382,32 +439,57 @@ function App() {
 
   //tbaKey effects
   useEffect(() => {
-    if (currentPage === "matchScouting" && matchScoutingErrorMessage === null) {
-      populateEvents();
+    if (!(
+      currentPage === "matchScouting" &&
+      matchScoutingErrorMessage === null &&
+      events.size === 0
+    )) {
+      return;
     }
-  }, [currentPage, matchScoutingErrorMessage, populateEvents]);
+    populateEvents();
+  }, [currentPage, events.size, matchScoutingErrorMessage, populateEvents]);
 
   //currentEvent effects
-  useEffect(() => {
-    if (
-      currentPage === "matchScouting" &&
-      matchScoutingErrorMessage === null &&
-      currentEvent
-    ) {
-      populateMatches();
-    }
-  }, [currentPage, currentEvent, populateMatches, matchScoutingErrorMessage]);
+  {
+    const previousEvent = useRef<string | null>(null);
+    useEffect(() => {
+      if (!(
+        currentPage === "matchScouting" &&
+        matchScoutingErrorMessage === null &&
+        currentEvent
+      )) {
+        return;
+      }
+      if (
+        previousEvent.current === null ||
+        previousEvent.current !== currentEvent
+      ) {
+        populateMatches();
+      }
+      previousEvent.current = currentEvent;
+    }, [currentPage, currentEvent, populateMatches, matchScoutingErrorMessage]);
+  }
 
   //currentMatch effects
-  useEffect(() => {
-    if (
-      currentPage === "matchScouting" &&
-      matchScoutingErrorMessage === null &&
-      currentMatch
-    ) {
-      populateTeams();
-    }
-  }, [currentPage, currentMatch, populateTeams, matchScoutingErrorMessage]);
+  {
+    const previousMatch = useRef<string | null>(null);
+    useEffect(() => {
+      if (!(
+        currentPage === "matchScouting" &&
+        matchScoutingErrorMessage === null &&
+        currentMatch
+      )) {
+        return;
+      }
+      if (
+        previousMatch.current === null ||
+        previousMatch.current !== currentMatch
+      ) {
+        populateTeams();
+      }
+      previousMatch.current = currentMatch;
+    }, [currentPage, currentMatch, populateTeams, matchScoutingErrorMessage]);
+  }
 
   function resetMatchScoutingData() {
     saveCurrentMatch(getNextMatch(currentMatch, matches));
@@ -432,19 +514,20 @@ function App() {
     <>
       {currentPage === "login" && (
         <div className="login-button-container">
-          <GoogleLogin
-            onSuccess={async (credentialResponse) => {
-              logInWithGoogle(credentialResponse);
-              if (tbaKey === "") {
-                setCurrentPage("tbaKeyInput");
-              } else {
-                setCurrentPage("matchScouting");
-              }
-            }}
-            onError={() => {
-              console.log("Login Failed");
-            }}
-          />
+          {autoLoginDone ? (
+            <GoogleLogin
+              onSuccess={async (credentialResponse) => {
+                const credential = GoogleAuthProvider.credential(
+                  credentialResponse.credential,
+                );
+                await signInWithCredential(auth, credential);
+                openHomePage();
+              }}
+              onError={() => {
+                console.log("Login Failed");
+              }}
+            />
+          ) : null}
         </div>
       )}
 
@@ -576,7 +659,10 @@ function App() {
               {currentMatch ? (
                 <div>
                   <div>
-                    <h3>Team</h3>
+                    {teams.redAlliance.length > 0 ||
+                    teams.blueAlliance.length > 0 ? (
+                      <h3>Team</h3>
+                    ) : null}
 
                     {/* Red Alliance Row */}
                     <div className="teamGrid">
@@ -724,7 +810,7 @@ function App() {
                     >
                       {"Defense: " + matchScoutingData.defense}
                     </button>
-                    <p>{"Driver rating: " + matchScoutingData.driverRating}</p>
+                    <p>{"Driver Rating: " + matchScoutingData.driverRating}</p>
                     <input
                       type="range"
                       min="1"
@@ -752,10 +838,19 @@ function App() {
                     />
                   </div>
 
-                  <button onClick={sendData} className="saveButton">
-                    <Save size={22} />
+                  <button
+                    disabled={!canSendData()}
+                    onClick={sendData}
+                    className="saveButton"
+                  >
+                    {matchScoutingDataSending ? (
+                      <Loader2 className="animate-spin" size="22" />
+                    ) : (
+                      <Save size="22" />
+                    )}
                     Save Match
                   </button>
+                  <label>{currentTeam ? null : "Select a team first"}</label>
                 </div>
               ) : null}
             </div>
@@ -764,12 +859,6 @@ function App() {
               <p>{matchScoutingErrorMessage}</p>
             </div>
           )}
-        </div>
-      )}
-
-      {currentPage === "dataView" && (
-        <div>
-          <h1>Data View</h1>
         </div>
       )}
     </>

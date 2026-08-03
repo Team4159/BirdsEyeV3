@@ -57,18 +57,12 @@ export function getMatchNumberFromKey(key: string): number {
 }
 
 export function getNextMatch(key: string, matchKeys: string[]): string {
-  const currentMatchNumber = getMatchNumberFromKey(key);
-  const currentMatchType = getMatchTypeFromKey(key);
-  let matchKey = "";
-  matchKeys.forEach((key) => {
-    if (
-      getMatchNumberFromKey(key) === currentMatchNumber + 1 &&
-      getMatchTypeFromKey(key) === currentMatchType
-    ) {
-      matchKey = key;
-    }
-  });
-  return matchKey;
+  const matchIndex = matchKeys.indexOf(key);
+  const nextMatchIndex = matchIndex + 1;
+  if (matchIndex < 0 || nextMatchIndex >= matchKeys.length) {
+    return "";
+  }
+  return matchKeys[nextMatchIndex];
 }
 
 export function getSetNumberFromKey(key: string): number | null {
