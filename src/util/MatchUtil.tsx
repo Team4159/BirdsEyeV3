@@ -3,7 +3,7 @@ export function compareMatchKeys(a: string, b: string): number {
     qm: 0,
     qf: 1,
     sf: 2,
-    f: 3
+    f: 3,
   };
 
   function parseKey(key: string) {
@@ -56,15 +56,18 @@ export function getMatchNumberFromKey(key: string): number {
   return Number(matchNumber);
 }
 
-export function getNextMatch(key: string, matchKeys: string[]): string{
+export function getNextMatch(key: string, matchKeys: string[]): string {
   const currentMatchNumber = getMatchNumberFromKey(key);
   const currentMatchType = getMatchTypeFromKey(key);
-  var matchKey = "";
+  let matchKey = "";
   matchKeys.forEach((key) => {
-    if(getMatchNumberFromKey(key) === currentMatchNumber + 1 && getMatchTypeFromKey(key) === currentMatchType){
+    if (
+      getMatchNumberFromKey(key) === currentMatchNumber + 1 &&
+      getMatchTypeFromKey(key) === currentMatchType
+    ) {
       matchKey = key;
     }
-  })
+  });
   return matchKey;
 }
 
@@ -84,7 +87,15 @@ export function formatMatchLabel(key: string): string {
   const setNumber = getSetNumberFromKey(key);
 
   if (type === "Qualification") {
-    return `QM ${matchNumber}`;
+    return `Qualification ${matchNumber}`;
+  }
+
+  if (type === "Semifinal") {
+    return `Semifinal ${setNumber}`;
+  }
+
+  if (type === "Final") {
+    return `Final ${matchNumber}`;
   }
 
   return `${type} ${setNumber} - Match ${matchNumber}`;

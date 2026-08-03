@@ -1,5 +1,12 @@
-export const selectStyles = {
-  control: (base: any) => ({
+import type { StylesConfig } from "react-select";
+
+interface DropdownOption {
+  label: string;
+  value: string;
+}
+
+export const selectStyles: StylesConfig<DropdownOption, false> = {
+  control: (base) => ({
     ...base,
     backgroundColor: "var(--input)",
     borderColor: "var(--border)",
@@ -9,32 +16,30 @@ export const selectStyles = {
     boxShadow: "none",
   }),
 
-  menu: (base: any) => ({
+  menu: (base) => ({
     ...base,
     backgroundColor: "var(--card)",
     color: "var(--text)",
   }),
 
-  option: (base: any, state: any) => ({
+  option: (base, state) => ({
     ...base,
-    backgroundColor: state.isFocused
-      ? "var(--button-hover)"
-      : "var(--card)",
+    backgroundColor: state.isFocused ? "var(--button-hover)" : "var(--card)",
     color: "var(--text)",
     cursor: "pointer",
   }),
 
-  singleValue: (base: any) => ({
+  singleValue: (base) => ({
     ...base,
     color: "var(--text)",
   }),
 
-  input: (base: any) => ({
+  input: (base) => ({
     ...base,
     color: "var(--text)",
   }),
 
-  placeholder: (base: any) => ({
+  placeholder: (base) => ({
     ...base,
     color: "var(--text)",
     opacity: 0.6,

@@ -1,5 +1,3 @@
-import { Minus, Plus } from "lucide-react";
-
 type CounterProps = {
   label: string;
   value: number;
@@ -13,8 +11,7 @@ export const Counter: React.FC<CounterProps> = ({
   increments,
   onChange,
 }) => (
-  <div
-  >
+  <div>
     <span className="text-sm font-medium">{label}</span>
 
     <div className="datatable">
@@ -24,7 +21,7 @@ export const Counter: React.FC<CounterProps> = ({
           key={`minus-${inc}`}
           onClick={() => onChange(Math.max(0, value - inc))}
         >
-          <Minus size={14} /> {inc}
+          {`-${inc}`}
         </button>
       ))}
 
@@ -32,11 +29,8 @@ export const Counter: React.FC<CounterProps> = ({
 
       {/* Increment buttons */}
       {increments.reverse().map((inc) => (
-        <button
-          key={`plus-${inc}`}
-          onClick={() => onChange(value + inc)}
-        >
-          <Plus size={14} /> {inc}
+        <button key={`plus-${inc}`} onClick={() => onChange(value + inc)}>
+          {`+${inc}`}
         </button>
       ))}
     </div>
