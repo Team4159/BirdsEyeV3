@@ -565,8 +565,10 @@ function App() {
                           key={team}
                           className={`teamButton red ${currentTeam === team ? "selected" : ""}`}
                           onClick={() => saveCurrentTeam(team)}
+                          style={{ whiteSpace: "pre-line" }}
                         >
-                          {"Red" + (index + 1) + ": " + team.substring(3)}
+                          {`Red ${index + 1}
+                            ${team.substring(3)}`}
                         </button>
                       ))}
                     </div>
@@ -578,8 +580,10 @@ function App() {
                           key={team}
                           className={`teamButton blue ${currentTeam === team ? "selected" : ""}`}
                           onClick={() => saveCurrentTeam(team)}
+                          style={{ whiteSpace: "pre-line" }}
                         >
-                          {"Blue" + (index + 1) + ": " + team.substring(3)}
+                          {`Blue ${index + 1}
+                            ${team.substring(3)}`}
                         </button>
                       ))}
                     </div>
