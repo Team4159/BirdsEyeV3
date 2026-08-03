@@ -48,9 +48,12 @@ function App() {
   const [tbaKey, setTbaKey] = useState("");
   const [darkMode, setDarkMode] = useState(true);
   const [events, setEvents] = useState<Map<string, string>>(new Map());
+  const [eventsLoaded, setEventsLoaded] = useState(true);
   const [currentEvent, setCurrentEvent] = useState("");
   const [matches, setMatches] = useState([]);
+  const [matchesLoaded, setMatchesLoaded] = useState(true);
   const [currentMatch, setCurrentMatch] = useState("");
+  const [matchDataLoaded, setMatchDataLoaded] = useState(true);
   /** stores two arrays of teams (for red and blue) alliances. use .redAlliance and .bluealliance*/
   const [teams, setTeams] = useState({ redAlliance: [], blueAlliance: [] });
   const [currentTeam, setCurrentTeam] = useState("");
@@ -224,14 +227,16 @@ function App() {
     }
   }, [tbaKey]);
 
-  const populateEvents = useCallback(async () => {
+  const populateEvents = useCallback(() => {
     try {
       queueMicrotask(async () => {
+        setEventsLoaded(false);
         const eventsArray: { key: string; name: string }[] = await fetchTbaData(
           tbaKey,
           "/events/2026",
           false,
         );
+        setEventsLoaded(true);
         if (eventsArray === null) {
           return;
         }
@@ -245,20 +250,22 @@ function App() {
     }
   }, [tbaKey]);
 
-  const populateMatches = useCallback(async () => {
+  const populateMatches = useCallback(() => {
     try {
-      let matches = await fetchTbaData(
-        tbaKey,
-        `/event/${currentEvent}/matches/keys`,
-        false,
-      );
-      if (matches === null) {
-        return;
-      }
-      matches = matches.sort((a: string, b: string) => {
-        return compareMatchKeys(a, b);
-      });
-      queueMicrotask(() => {
+      queueMicrotask(async () => {
+        setMatchesLoaded(false);
+        let matches = await fetchTbaData(
+          tbaKey,
+          `/event/${currentEvent}/matches/keys`,
+          false,
+        );
+        setMatchesLoaded(true);
+        if (matches === null) {
+          return;
+        }
+        matches = matches.sort((a: string, b: string) => {
+          return compareMatchKeys(a, b);
+        });
         setMatches(matches);
       });
     } catch (error) {
@@ -266,26 +273,27 @@ function App() {
     }
   }, [currentEvent, tbaKey]);
 
-  const populateTeams = useCallback(async () => {
+  const populateTeams = useCallback(() => {
     try {
-      //raw match data from tba
-      const matchData = await fetchTbaData(
-        tbaKey,
-        `/match/${currentMatch}/simple`,
-      );
-      //fetch alliance data
-      const teamsData = { redAlliance: [], blueAlliance: [] };
+      queueMicrotask(async () => {
+        //raw match data from tba
+        setMatchDataLoaded(false);
+        const matchData = await fetchTbaData(
+          tbaKey,
+          `/match/${currentMatch}/simple`,
+        );
+        setMatchDataLoaded(true);
+        //fetch alliance data
+        const teamsData = { redAlliance: [], blueAlliance: [] };
 
-      //get general alliance objects
-      if (matchData !== null) {
-        const redAlliance = matchData.alliances.red.team_keys;
-        const blueAlliance = matchData.alliances.blue.team_keys;
+        //get general alliance objects
+        if (matchData !== null) {
+          const redAlliance = matchData.alliances.red.team_keys;
+          const blueAlliance = matchData.alliances.blue.team_keys;
 
-        teamsData.redAlliance = redAlliance;
-        teamsData.blueAlliance = blueAlliance;
-      }
-
-      queueMicrotask(() => {
+          teamsData.redAlliance = redAlliance;
+          teamsData.blueAlliance = blueAlliance;
+        }
         setTeams(teamsData);
       });
     } catch (error) {
@@ -523,6 +531,14 @@ function App() {
                     saveCurrentTeam("");
                   }}
                 />
+
+                <label>
+                  {eventsLoaded
+                    ? matchesLoaded
+                      ? null
+                      : "Matches loading..."
+                    : "Events loading..."}
+                </label>
               </div>
 
               <div>
@@ -552,6 +568,10 @@ function App() {
                     saveCurrentTeam("");
                   }}
                 />
+
+                <label>
+                  {matchDataLoaded ? null : "Match data loading..."}
+                </label>
               </div>
               {currentMatch ? (
                 <div>
