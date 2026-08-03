@@ -7,12 +7,15 @@ export async function verifyTbaKey(
   }
   let response;
   try {
-    response = await fetch(`https://www.thebluealliance.com/api/v3/status`, {
-      headers: {
-        "X-TBA-Auth-Key": tbaKey,
+    response = await fetch(
+      `https://www.thebluealliance.com/api/v3/status?cb=${Date.now()}`,
+      {
+        headers: {
+          "X-TBA-Auth-Key": tbaKey,
+        },
+        cache: "no-store",
       },
-      cache: "reload",
-    });
+    );
     if (!response.ok) throw new Error();
     return [true, null];
   } catch {
