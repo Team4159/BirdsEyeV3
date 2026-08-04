@@ -39,9 +39,9 @@
     flex: 1;
 }
 
+input,
 select,
-textarea,
-.slider {
+textarea {
     width: 100%;
     padding: 12px;
     font-size: 16px;
@@ -178,7 +178,6 @@ button:focus-visible {
     margin: 12px 0; /* optional spacing */
 }
 
-input,
 .slider {
     width: 100%; /* make slider fill the container */
     margin: 12px 0; /* optional spacing */
