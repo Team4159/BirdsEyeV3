@@ -18,7 +18,7 @@ export async function fetchTbaData(
         headers: {
           "X-TBA-Auth-Key": tbaKey,
         },
-        cache: cache ? "default" : "no-cache",
+        cache: cache ? "force-cache" : "no-cache",
       },
     );
     if (!response.ok) throw new Error("TBA API Error");
