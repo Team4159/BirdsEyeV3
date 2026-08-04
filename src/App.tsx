@@ -579,7 +579,13 @@ function App() {
             }}
             placeholder="Enter your TBA API key"
           />
-          <label>{tbaKey === "" ? null : tbaKeyMessage}</label>
+          <label>
+            {tbaKey === ""
+              ? null
+              : tbaKeyMessage === null
+                ? "Verified!"
+                : tbaKeyMessage}
+          </label>
         </div>
       )}
 
