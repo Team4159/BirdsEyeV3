@@ -60,6 +60,9 @@ function App() {
   const [autoLoginDone, setAutoLoginDone] = useState(false);
   const [currentPage, setCurrentPage] = useState("login");
   const [tbaKey, setTbaKey] = useState("");
+  const [tbaKeyMessage, setMatchScoutingErrorMessage] = useState<string | null>(
+    null,
+  );
   const [darkMode, setDarkMode] = useState(true);
   const [events, setEvents] = useState<Map<string, string>>(new Map());
   const [eventsLoaded, setEventsLoaded] = useState(true);
@@ -86,9 +89,6 @@ function App() {
   });
   const [matchScoutingDataSending, setMatchScoutingDataSending] =
     useState(false);
-  const [matchScoutingErrorMessage, setMatchScoutingErrorMessage] = useState<
-    string | null
-  >(null);
 
   //set body to dark mode initially
   document.body.classList.toggle("darkBG", darkMode);
@@ -441,13 +441,13 @@ function App() {
   useEffect(() => {
     if (!(
       currentPage === "matchScouting" &&
-      matchScoutingErrorMessage === null &&
+      tbaKeyMessage === null &&
       events.size === 0
     )) {
       return;
     }
     populateEvents();
-  }, [currentPage, events.size, matchScoutingErrorMessage, populateEvents]);
+  }, [currentPage, events.size, tbaKeyMessage, populateEvents]);
 
   //currentEvent effects
   {
@@ -455,7 +455,7 @@ function App() {
     useEffect(() => {
       if (!(
         currentPage === "matchScouting" &&
-        matchScoutingErrorMessage === null &&
+        tbaKeyMessage === null &&
         currentEvent
       )) {
         return;
@@ -467,7 +467,7 @@ function App() {
         populateMatches();
       }
       previousEvent.current = currentEvent;
-    }, [currentPage, currentEvent, populateMatches, matchScoutingErrorMessage]);
+    }, [currentPage, currentEvent, populateMatches, tbaKeyMessage]);
   }
 
   //currentMatch effects
@@ -476,7 +476,7 @@ function App() {
     useEffect(() => {
       if (!(
         currentPage === "matchScouting" &&
-        matchScoutingErrorMessage === null &&
+        tbaKeyMessage === null &&
         currentMatch
       )) {
         return;
@@ -488,7 +488,7 @@ function App() {
         populateTeams();
       }
       previousMatch.current = currentMatch;
-    }, [currentPage, currentMatch, populateTeams, matchScoutingErrorMessage]);
+    }, [currentPage, currentMatch, populateTeams, tbaKeyMessage]);
   }
 
   function resetMatchScoutingData() {
@@ -579,13 +579,14 @@ function App() {
             }}
             placeholder="Enter your TBA API key"
           />
+          <label>{tbaKey === "" ? null : tbaKeyMessage}</label>
         </div>
       )}
 
       {currentPage === "matchScouting" && (
         <div className={cardClass}>
           <h1>Match Scouting</h1>
-          {matchScoutingErrorMessage === null ? (
+          {tbaKeyMessage === null ? (
             <div>
               <div>
                 <h3>Event</h3>
@@ -856,7 +857,7 @@ function App() {
             </div>
           ) : (
             <div>
-              <p>{matchScoutingErrorMessage}</p>
+              <p>{tbaKeyMessage}</p>
             </div>
           )}
         </div>
