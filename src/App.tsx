@@ -66,7 +66,8 @@ function App() {
   const [darkMode, setDarkMode] = useState(true);
   const [events, setEvents] = useState<Map<string, string>>(new Map());
   const [eventsLoaded, setEventsLoaded] = useState(true);
-  const [currentEvent, setCurrentEvent] = useState("");
+  const [currentEventCode, setCurrentEventCode] = useState("");
+  const [currentEventName, setCurrentEventName] = useState("");
   const [matches, setMatches] = useState([]);
   const [matchesLoaded, setMatchesLoaded] = useState(true);
   const [currentMatch, setCurrentMatch] = useState("");
@@ -93,7 +94,17 @@ function App() {
   //set body to dark mode initially
   document.body.classList.toggle("darkBG", darkMode);
 
-  const loadTbaKey = async () => {
+  const deleteOldLocalStorage = () => {
+    try {
+      if (localStorage.getItem("currentEvent")) {
+        localStorage.removeItem("currentEvent");
+      }
+    } catch {
+      console.log("Failed to delete old local storage");
+    }
+  };
+
+  const loadTbaKey = () => {
     try {
       const key = localStorage.getItem("tbaKey");
       if (key) {
@@ -106,7 +117,7 @@ function App() {
     }
   };
 
-  const saveTbaKey = async (key: string) => {
+  const saveTbaKey = (key: string) => {
     try {
       localStorage.setItem("tbaKey", key);
       setTbaKey(key);
@@ -116,7 +127,7 @@ function App() {
     }
   };
 
-  const loadDarkMode = async () => {
+  const loadDarkMode = () => {
     try {
       const darkMode = localStorage.getItem("darkMode") !== "light";
       applyDarkMode(darkMode);
@@ -134,12 +145,18 @@ function App() {
     setDarkMode(darkMode);
   };
 
-  const loadCurrentEvent = async () => {
+  const loadCurrentEvent = () => {
     try {
-      const result = localStorage.getItem("currentEvent");
-      if (result) {
+      const currentEventCode = localStorage.getItem("currentEventCode");
+      const currentEventName = localStorage.getItem("currentEventName");
+      if (currentEventCode) {
         queueMicrotask(() => {
-          setCurrentEvent(result);
+          setCurrentEventCode(currentEventCode);
+        });
+      }
+      if (currentEventName) {
+        queueMicrotask(() => {
+          setCurrentEventName(currentEventName);
         });
       }
     } catch {
@@ -147,17 +164,19 @@ function App() {
     }
   };
 
-  const saveCurrentEvent = async (currentEvent: string) => {
+  const saveCurrentEvent = (eventCode: string, eventName: string) => {
     try {
-      localStorage.setItem("currentEvent", currentEvent);
-      setCurrentEvent(currentEvent);
+      localStorage.setItem("currentEventCode", eventCode);
+      localStorage.setItem("currentEventName", eventName);
+      setCurrentEventCode(eventCode);
+      setCurrentEventName(eventName);
     } catch (error) {
       console.error("Error saving event:", error);
       return;
     }
   };
 
-  const loadCurrentMatch = async () => {
+  const loadCurrentMatch = () => {
     try {
       const result = localStorage.getItem("currentMatch");
       if (result) {
@@ -170,7 +189,7 @@ function App() {
     }
   };
 
-  const saveCurrentMatch = async (currentMatch: string) => {
+  const saveCurrentMatch = (currentMatch: string) => {
     try {
       localStorage.setItem("currentMatch", currentMatch);
       setCurrentMatch(currentMatch);
@@ -180,7 +199,7 @@ function App() {
     }
   };
 
-  const loadCurrentTeam = async () => {
+  const loadCurrentTeam = () => {
     try {
       const result = localStorage.getItem("currentTeam");
       if (result) {
@@ -193,7 +212,7 @@ function App() {
     }
   };
 
-  const saveCurrentTeam = async (currentTeam: string) => {
+  const saveCurrentTeam = (currentTeam: string) => {
     try {
       localStorage.setItem("currentTeam", currentTeam);
       setCurrentTeam(currentTeam);
@@ -203,7 +222,7 @@ function App() {
     }
   };
 
-  const loadMatchScoutingData = async () => {
+  const loadMatchScoutingData = () => {
     try {
       const result = localStorage.getItem("currentMatchScoutingData");
       if (result) {
@@ -216,7 +235,7 @@ function App() {
     }
   };
 
-  const saveMatchScoutingData = async (
+  const saveMatchScoutingData = (
     matchScoutingData: Parameters<typeof setMatchScoutingData>[0],
   ) => {
     try {
@@ -272,7 +291,7 @@ function App() {
         setMatchesLoaded(false);
         let matches = await fetchTbaData(
           tbaKey,
-          `/event/${currentEvent}/matches/keys`,
+          `/event/${currentEventCode}/matches/keys`,
           false,
         );
         setMatchesLoaded(true);
@@ -287,7 +306,7 @@ function App() {
         console.error("Failed to set matches: ", error);
       }
     });
-  }, [currentEvent, tbaKey]);
+  }, [currentEventCode, tbaKey]);
 
   const populateTeams = useCallback(() => {
     queueMicrotask(async () => {
@@ -319,7 +338,10 @@ function App() {
 
   function canSendData() {
     return (
-      !matchScoutingDataSending && currentEvent && currentMatch && currentTeam
+      !matchScoutingDataSending &&
+      currentEventCode &&
+      currentMatch &&
+      currentTeam
     );
   }
 
@@ -332,14 +354,14 @@ function App() {
       setMatchScoutingDataSending(true);
       // ✅ Ensure event exists
       await setDoc(
-        doc(firestore, "events", currentEvent),
-        { name: currentEvent },
+        doc(firestore, "events", currentEventCode),
+        { name: currentEventCode },
         { merge: true },
       );
 
       // ✅ Ensure team exists
       await setDoc(
-        doc(firestore, "events", currentEvent, "teams", currentTeam),
+        doc(firestore, "events", currentEventCode, "teams", currentTeam),
         { name: currentTeam },
         { merge: true },
       );
@@ -349,7 +371,7 @@ function App() {
         doc(
           firestore,
           "events",
-          currentEvent,
+          currentEventCode,
           "teams",
           currentTeam,
           "matches",
@@ -364,7 +386,7 @@ function App() {
         collection(
           firestore,
           "events",
-          currentEvent,
+          currentEventCode,
           "teams",
           currentTeam,
           "matches",
@@ -403,6 +425,7 @@ function App() {
 
   //run when app loads
   useEffect(() => {
+    deleteOldLocalStorage();
     loadTbaKey();
     loadDarkMode();
     loadCurrentEvent();
@@ -451,23 +474,23 @@ function App() {
 
   //currentEvent effects
   {
-    const previousEvent = useRef<string | null>(null);
+    const previousEventCode = useRef<string | null>(null);
     useEffect(() => {
       if (!(
         currentPage === "matchScouting" &&
         tbaKeyMessage === null &&
-        currentEvent
+        currentEventCode
       )) {
         return;
       }
       if (
-        previousEvent.current === null ||
-        previousEvent.current !== currentEvent
+        previousEventCode.current === null ||
+        previousEventCode.current !== currentEventCode
       ) {
         populateMatches();
       }
-      previousEvent.current = currentEvent;
-    }, [currentPage, currentEvent, populateMatches, tbaKeyMessage]);
+      previousEventCode.current = currentEventCode;
+    }, [currentPage, currentEventCode, populateMatches, tbaKeyMessage]);
   }
 
   //currentMatch effects
@@ -600,23 +623,24 @@ function App() {
                 <Select
                   styles={selectStyles}
                   value={
-                    currentEvent
+                    currentEventCode
                       ? {
-                          value: currentEvent,
-                          label: `${events.get(currentEvent)} (${currentEvent})`,
+                          value: currentEventCode,
+                          label: `${currentEventName} (${currentEventCode})`,
                         }
                       : null
                   }
 
-                  options={[...events.keys()].map((code) => ({
-                    value: code,
-                    label: `${events.get(code)} (${code})`,
+                  options={[...events.keys()].map((eventCode) => ({
+                    value: eventCode,
+                    label: `${events.get(eventCode)} (${eventCode})`,
                   }))}
 
                   onChange={(selected) => {
-                    const eventValue = selected?.value || "";
+                    const eventCode = selected?.value || "";
+                    const eventName = events.get(eventCode) || "";
 
-                    saveCurrentEvent(eventValue);
+                    saveCurrentEvent(eventCode, eventName);
                     saveCurrentMatch("");
                     saveCurrentTeam("");
                   }}
