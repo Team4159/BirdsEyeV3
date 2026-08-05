@@ -11,4 +11,18 @@ export default defineConfig({
     }),
   ],
   base: "/BirdsEyeV3",
+  build: {
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          groups: [
+            {
+              name: "firebase",
+              test: /node_modules\/firebase/,
+            },
+          ],
+        },
+      },
+    },
+  },
 });
