@@ -56,37 +56,60 @@ const app = initializeApp(firebaseConfig);
 const firestore = getFirestore(app);
 const auth = getAuth(app);
 
+const matchScoutingDataDefault = {
+  autoFuels: 0,
+  autoNotes: "",
+  autoClimb: "none",
+  teleopFuels: 0,
+  endgameClimb: "none",
+  fouls: 0,
+  techFouls: 0,
+  defense: false,
+  driverRating: 3.0,
+  driverNotes: "",
+};
+Object.freeze(matchScoutingDataDefault);
+
 function App() {
   const [autoLoginDone, setAutoLoginDone] = useState(false);
   const [currentPage, setCurrentPage] = useState("login");
-  const [tbaKey, setTbaKey] = useState("");
+  const [tbaKey, setTbaKey] = useState(() => {
+    return localStorage.getItem("tbaKey") || "";
+  });
   const [tbaKeyMessage, setMatchScoutingErrorMessage] = useState<string | null>(
     null,
   );
-  const [darkMode, setDarkMode] = useState(true);
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem("darkMode") !== "light";
+  });
   const [events, setEvents] = useState<Map<string, string>>(new Map());
   const [eventsLoaded, setEventsLoaded] = useState(true);
-  const [currentEventCode, setCurrentEventCode] = useState("");
-  const [currentEventName, setCurrentEventName] = useState("");
+  const [currentEventCode, setCurrentEventCode] = useState(() => {
+    return localStorage.getItem("currentEventCode") || "";
+  });
+  const [currentEventName, setCurrentEventName] = useState(() => {
+    return localStorage.getItem("currentEventName") || "";
+  });
   const [matches, setMatches] = useState([]);
   const [matchesLoaded, setMatchesLoaded] = useState(true);
-  const [currentMatch, setCurrentMatch] = useState("");
+  const [currentMatch, setCurrentMatch] = useState(() => {
+    return localStorage.getItem("currentMatch") || "";
+  });
   const [matchDataLoaded, setMatchDataLoaded] = useState(true);
   /** stores two arrays of teams (for red and blue) alliances. use .redAlliance and .bluealliance*/
   const [teams, setTeams] = useState({ redAlliance: [], blueAlliance: [] });
-  const [currentTeam, setCurrentTeam] = useState("");
+  const [currentTeam, setCurrentTeam] = useState(() => {
+    return localStorage.getItem("currentTeam") || "";
+  });
   /** match scouting data for the team being scouted */
-  const [matchScoutingData, setMatchScoutingData] = useState({
-    autoFuels: 0,
-    autoNotes: "",
-    autoClimb: "none",
-    teleopFuels: 0,
-    endgameClimb: "none",
-    fouls: 0,
-    techFouls: 0,
-    defense: false,
-    driverRating: 3.0,
-    driverNotes: "",
+  const [matchScoutingData, setMatchScoutingData] = useState<
+    typeof matchScoutingDataDefault
+  >(() => {
+    const data = localStorage.getItem("currentMatchScoutingData");
+    if (data) {
+      return JSON.parse(data);
+    }
+    return structuredClone(matchScoutingDataDefault);
   });
   const [matchScoutingDataSending, setMatchScoutingDataSending] =
     useState(false);
@@ -94,7 +117,7 @@ function App() {
   //set body to dark mode initially
   document.body.classList.toggle("darkBG", darkMode);
 
-  const deleteOldLocalStorage = () => {
+  function deleteOldLocalStorage() {
     try {
       if (localStorage.getItem("currentEvent")) {
         localStorage.removeItem("currentEvent");
@@ -102,40 +125,15 @@ function App() {
     } catch {
       console.log("Failed to delete old local storage");
     }
-  };
-
-  const loadTbaKey = () => {
-    try {
-      const key = localStorage.getItem("tbaKey");
-      if (key) {
-        queueMicrotask(() => {
-          setTbaKey(key);
-        });
-      }
-    } catch {
-      console.log("No TBA key found");
-    }
-  };
+  }
 
   const saveTbaKey = (key: string) => {
     try {
-      localStorage.setItem("tbaKey", key);
       setTbaKey(key);
+      localStorage.setItem("tbaKey", key);
     } catch (error) {
       console.error("Error saving TBA key:", error);
       return;
-    }
-  };
-
-  const loadDarkMode = () => {
-    try {
-      const darkMode = localStorage.getItem("darkMode") !== "light";
-      applyDarkMode(darkMode);
-      queueMicrotask(() => {
-        setDarkMode(darkMode);
-      });
-    } catch {
-      console.log("No dark mode preference found");
     }
   };
 
@@ -143,25 +141,6 @@ function App() {
     localStorage.setItem("darkMode", darkMode ? "dark" : "light");
     applyDarkMode(darkMode);
     setDarkMode(darkMode);
-  };
-
-  const loadCurrentEvent = () => {
-    try {
-      const currentEventCode = localStorage.getItem("currentEventCode");
-      const currentEventName = localStorage.getItem("currentEventName");
-      if (currentEventCode) {
-        queueMicrotask(() => {
-          setCurrentEventCode(currentEventCode);
-        });
-      }
-      if (currentEventName) {
-        queueMicrotask(() => {
-          setCurrentEventName(currentEventName);
-        });
-      }
-    } catch {
-      console.log("No event found");
-    }
   };
 
   const saveCurrentEvent = (eventCode: string, eventName: string) => {
@@ -176,19 +155,6 @@ function App() {
     }
   };
 
-  const loadCurrentMatch = () => {
-    try {
-      const result = localStorage.getItem("currentMatch");
-      if (result) {
-        queueMicrotask(() => {
-          setCurrentMatch(result);
-        });
-      }
-    } catch {
-      console.log("No match found");
-    }
-  };
-
   const saveCurrentMatch = (currentMatch: string) => {
     try {
       localStorage.setItem("currentMatch", currentMatch);
@@ -199,19 +165,6 @@ function App() {
     }
   };
 
-  const loadCurrentTeam = () => {
-    try {
-      const result = localStorage.getItem("currentTeam");
-      if (result) {
-        queueMicrotask(() => {
-          setCurrentTeam(result);
-        });
-      }
-    } catch {
-      console.log("No team found");
-    }
-  };
-
   const saveCurrentTeam = (currentTeam: string) => {
     try {
       localStorage.setItem("currentTeam", currentTeam);
@@ -219,19 +172,6 @@ function App() {
     } catch (error) {
       console.error("Error saving team:", error);
       return;
-    }
-  };
-
-  const loadMatchScoutingData = () => {
-    try {
-      const result = localStorage.getItem("currentMatchScoutingData");
-      if (result) {
-        queueMicrotask(() => {
-          setMatchScoutingData(JSON.parse(result));
-        });
-      }
-    } catch {
-      console.log("No match found");
     }
   };
 
@@ -250,90 +190,82 @@ function App() {
     }
   };
 
-  const gatekeepMatchScoutingPage = useCallback(async () => {
-    queueMicrotask(async () => {
-      try {
-        setMatchScoutingErrorMessage("Verifying TBA API key...");
-        const [, message] = await verifyTbaKey(tbaKey);
-        setMatchScoutingErrorMessage(message);
-      } catch (error) {
-        console.error("Failed to verify TBA key: ", error);
+  const gatekeepMatchScoutingPage = async (tbaKey: string) => {
+    try {
+      setMatchScoutingErrorMessage("Verifying TBA API key...");
+      const [, message] = await verifyTbaKey(tbaKey);
+      setMatchScoutingErrorMessage(message);
+    } catch (error) {
+      console.error("Failed to verify TBA key: ", error);
+    }
+  };
+
+  const populateEvents = useCallback(async () => {
+    try {
+      setEventsLoaded(false);
+      const eventsArray: { key: string; name: string }[] = await fetchTbaData(
+        tbaKey,
+        "/events/2026",
+        false,
+      );
+      setEventsLoaded(true);
+      if (eventsArray === null) {
+        return;
       }
-    });
+      const eventsMap: Map<string, string> = new Map(
+        eventsArray.map((event) => [event.key, event.name]),
+      );
+      setEvents(eventsMap);
+    } catch (error) {
+      console.error("Failed to set matches: ", error);
+    }
   }, [tbaKey]);
 
-  const populateEvents = useCallback(() => {
-    queueMicrotask(async () => {
-      try {
-        setEventsLoaded(false);
-        const eventsArray: { key: string; name: string }[] = await fetchTbaData(
-          tbaKey,
-          "/events/2026",
-          false,
-        );
-        setEventsLoaded(true);
-        if (eventsArray === null) {
-          return;
-        }
-        const eventsMap: Map<string, string> = new Map(
-          eventsArray.map((event) => [event.key, event.name]),
-        );
-        setEvents(eventsMap);
-      } catch (error) {
-        console.error("Failed to set matches: ", error);
+  const populateMatches = useCallback(async () => {
+    try {
+      setMatchesLoaded(false);
+      let matches = await fetchTbaData(
+        tbaKey,
+        `/event/${currentEventCode}/matches/keys`,
+        false,
+      );
+      setMatchesLoaded(true);
+      if (matches === null) {
+        return;
       }
-    });
-  }, [tbaKey]);
-
-  const populateMatches = useCallback(() => {
-    queueMicrotask(async () => {
-      try {
-        setMatchesLoaded(false);
-        let matches = await fetchTbaData(
-          tbaKey,
-          `/event/${currentEventCode}/matches/keys`,
-          false,
-        );
-        setMatchesLoaded(true);
-        if (matches === null) {
-          return;
-        }
-        matches = matches.sort((a: string, b: string) => {
-          return compareMatchKeys(a, b);
-        });
-        setMatches(matches);
-      } catch (error) {
-        console.error("Failed to set matches: ", error);
-      }
-    });
+      matches = matches.sort((a: string, b: string) => {
+        return compareMatchKeys(a, b);
+      });
+      setMatches(matches);
+    } catch (error) {
+      console.error("Failed to set matches: ", error);
+    }
   }, [currentEventCode, tbaKey]);
 
-  const populateTeams = useCallback(() => {
-    queueMicrotask(async () => {
-      try {
-        const teamsData = { redAlliance: [], blueAlliance: [] };
-        setTeams(teamsData);
-        setMatchDataLoaded(false);
-        //raw match data from tba
-        const matchData = await fetchTbaData(
-          tbaKey,
-          `/match/${currentMatch}/simple`,
-        );
-        setMatchDataLoaded(true);
+  const populateTeams = useCallback(async () => {
+    try {
+      const teamsData = { redAlliance: [], blueAlliance: [] };
+      setTeams(teamsData);
+      setMatchDataLoaded(false);
+      //raw match data from tba
+      const matchData = await fetchTbaData(
+        tbaKey,
+        `/match/${currentMatch}/simple`,
+      );
+      setMatchDataLoaded(true);
 
-        //fetch alliance data
-        if (matchData !== null) {
-          const redAlliance = matchData.alliances.red.team_keys;
-          const blueAlliance = matchData.alliances.blue.team_keys;
+      //fetch alliance data
+      if (matchData !== null) {
+        const redAlliance = matchData.alliances.red.team_keys;
+        const blueAlliance = matchData.alliances.blue.team_keys;
 
-          teamsData.redAlliance = redAlliance;
-          teamsData.blueAlliance = blueAlliance;
-        }
-        setTeams(teamsData);
-      } catch (error) {
-        console.error("Failed to set matches: ", error);
+        teamsData.redAlliance = redAlliance;
+        teamsData.blueAlliance = blueAlliance;
       }
-    });
+      setTeams(teamsData);
+    } catch (error) {
+      console.error("Failed to set matches: ", error);
+    }
   }, [currentMatch, tbaKey]);
 
   function canSendData() {
@@ -403,11 +335,9 @@ function App() {
 
       setMatchScoutingDataSending(false);
 
-      queueMicrotask(() => {
-        window.scrollTo({
-          top: 0,
-          behavior: "smooth",
-        });
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
       });
     } catch (e) {
       console.error("Error adding document: " + e);
@@ -426,51 +356,33 @@ function App() {
   //run when app loads
   useEffect(() => {
     deleteOldLocalStorage();
-    loadTbaKey();
-    loadDarkMode();
-    loadCurrentEvent();
-    loadCurrentMatch();
-    loadMatchScoutingData();
-    loadCurrentTeam();
+    applyDarkMode(darkMode);
+    onAuthStateChanged(auth, (user) => {
+      setAutoLoginDone(true);
+      if (user != null) {
+        openHomePage(tbaKey);
+      } else {
+        setCurrentPage("login");
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // auto login
-  {
-    const tbaKeyRef = useRef(tbaKey);
-
-    useEffect(() => {
-      tbaKeyRef.current = tbaKey;
-    }, [tbaKey]);
-
-    useEffect(() => {
-      onAuthStateChanged(auth, (user) => {
-        setAutoLoginDone(true);
-        if (user != null) {
-          openHomePage(tbaKeyRef.current);
-        } else {
-          setCurrentPage("login");
-        }
-      });
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-  }
-
-  // match scouting page effect
-  useEffect(() => {
-    gatekeepMatchScoutingPage();
-  }, [gatekeepMatchScoutingPage, tbaKey]);
-
   //tbaKey effects
-  useEffect(() => {
-    if (!(
-      currentPage === "matchScouting" &&
-      tbaKeyMessage === null &&
-      events.size === 0
-    )) {
-      return;
-    }
-    populateEvents();
-  }, [currentPage, events.size, tbaKeyMessage, populateEvents]);
+  {
+    const eventsSize = useRef<number>(0);
+    useEffect(() => {
+      eventsSize.current = events.size;
+      if (!(
+        currentPage === "matchScouting" &&
+        tbaKeyMessage === null &&
+        eventsSize.current === 0
+      )) {
+        return;
+      }
+      populateEvents();
+    }, [currentPage, events.size, tbaKeyMessage, populateEvents]);
+  }
 
   //currentEvent effects
   {
@@ -517,18 +429,7 @@ function App() {
   function resetMatchScoutingData() {
     saveCurrentMatch(getNextMatch(currentMatch, matches));
     saveCurrentTeam("");
-    saveMatchScoutingData({
-      autoFuels: 0,
-      autoNotes: "",
-      autoClimb: "none",
-      teleopFuels: 0,
-      endgameClimb: "none",
-      fouls: 0,
-      techFouls: 0,
-      defense: false,
-      driverRating: 3.0,
-      driverNotes: "",
-    });
+    saveMatchScoutingData(structuredClone(matchScoutingDataDefault));
   }
 
   const cardClass = "card";
@@ -598,7 +499,9 @@ function App() {
             type="text"
             value={tbaKey}
             onChange={(e) => {
-              saveTbaKey(e.target.value);
+              const tbaKey = e.target.value;
+              saveTbaKey(tbaKey);
+              gatekeepMatchScoutingPage(tbaKey);
             }}
             placeholder="Enter your TBA API key"
           />
