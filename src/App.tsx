@@ -365,6 +365,7 @@ function App() {
         setCurrentPage("login");
       }
     });
+    (async () => gatekeepMatchScoutingPage(tbaKey))();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
