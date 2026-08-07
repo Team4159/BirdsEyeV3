@@ -314,7 +314,7 @@ export function MatchScoutingPage({
 
             <span>{matchDataLoaded ? null : "Match data loading..."}</span>
           </div>
-          {matchScoutingMetadata.match ? (
+          {matchScoutingMetadata.eventCode && matchScoutingMetadata.match ? (
             <div>
               <div>
                 {teams.redAlliance.length > 0 ||
