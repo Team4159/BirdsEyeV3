@@ -269,3 +269,25 @@ button:focus-visible {
         transform: rotate(360deg);
     }
 }
+
+.square-button {
+    width: auto;
+    aspect-ratio: 1;
+    flex: none !important;
+}
+
+.binary-action-button.yes {
+    background-color: #5bc450;
+}
+
+.binary-action-button.yes:hover {
+    background-color: #73db67;
+}
+
+.binary-action-button.no {
+    background-color: #e04444;
+}
+
+.binary-action-button.no:hover {
+    background-color: #f75b5b;
+}
