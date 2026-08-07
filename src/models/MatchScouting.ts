@@ -1,4 +1,5 @@
 export type MatchScoutingMetadata = {
+  year: number;
   eventCode: string;
   eventName: string;
   match: string;

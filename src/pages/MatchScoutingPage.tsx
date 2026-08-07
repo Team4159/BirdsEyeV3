@@ -14,6 +14,7 @@ import {
   type MatchScoutingData,
   type MatchScoutingMetadata,
 } from "../models/MatchScouting";
+import { YEAR } from "../util/year";
 
 type MatchScoutingPageProps = {
   tbaKey: string;
@@ -39,6 +40,7 @@ export function MatchScoutingPage({
     useState(false);
   const [matchScoutingMetadata, setMatchScoutingMetadata] =
     useState<MatchScoutingMetadata>(() => ({
+      year: YEAR,
       eventCode: localStorage.getItem("currentEventCode") || "",
       eventName: localStorage.getItem("currentEventName") || "",
       match: localStorage.getItem("currentMatch") || "",
@@ -109,7 +111,7 @@ export function MatchScoutingPage({
       setEventsLoaded(false);
       const eventsArray: { key: string; name: string }[] = await fetchTbaData(
         tbaKey,
-        "/events/2026",
+        `/events/${YEAR}`,
         false,
       );
       setEventsLoaded(true);
@@ -189,21 +191,22 @@ export function MatchScoutingPage({
 
   //tbaKey effects
   {
-    const eventsSize = useRef<number>(0);
+    const populated = useRef<boolean>(false);
     useEffect(() => {
-      eventsSize.current = events.size;
-      if (!(tbaKeyResponse === null && eventsSize.current === 0)) {
+      if (tbaKeyResponse !== null || populated.current) {
         return;
       }
       populateEvents();
-    }, [events.size, tbaKeyResponse, populateEvents]);
+      populated.current = true;
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [events.size, tbaKeyResponse]);
   }
 
   //currentEvent effects
   {
     const previousEventCode = useRef<string | null>(null);
     useEffect(() => {
-      if (!(tbaKeyResponse === null && matchScoutingMetadata.eventCode)) {
+      if (tbaKeyResponse !== null || !matchScoutingMetadata.eventCode) {
         return;
       }
       if (
@@ -213,14 +216,15 @@ export function MatchScoutingPage({
         populateMatches();
       }
       previousEventCode.current = matchScoutingMetadata.eventCode;
-    }, [matchScoutingMetadata.eventCode, populateMatches, tbaKeyResponse]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [matchScoutingMetadata.eventCode, tbaKeyResponse]);
   }
 
   //currentMatch effects
   {
     const previousMatch = useRef<string | null>(null);
     useEffect(() => {
-      if (!(tbaKeyResponse === null && matchScoutingMetadata.match)) {
+      if (tbaKeyResponse !== null || !matchScoutingMetadata.match) {
         return;
       }
       if (
@@ -230,11 +234,12 @@ export function MatchScoutingPage({
         populateTeams();
       }
       previousMatch.current = matchScoutingMetadata.match;
-    }, [matchScoutingMetadata.match, populateTeams, tbaKeyResponse]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [matchScoutingMetadata.match, tbaKeyResponse]);
   }
 
   return (
-    <div className="card">
+    <div key="match-scouting-page" className="card">
       <h1>Match Scouting</h1>
       {tbaKeyResponse === null ? (
         <div>

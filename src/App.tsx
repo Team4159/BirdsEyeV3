@@ -106,40 +106,42 @@ function App() {
     matchScoutingData: MatchScoutingData,
   ) {
     try {
-      // ✅ Ensure event exists
-      await setDoc(
-        doc(firestore, "events", matchScoutingMetadata.eventCode),
-        { name: matchScoutingMetadata.eventCode },
-        { merge: true },
-      );
-
-      // ✅ Ensure team exists
-      await setDoc(
-        doc(
-          firestore,
-          "events",
-          matchScoutingMetadata.eventCode,
-          "teams",
-          matchScoutingMetadata.team,
+      Promise.all([
+        // ✅ Ensure event exists
+        setDoc(
+          doc(firestore, "events", matchScoutingMetadata.eventCode),
+          { name: matchScoutingMetadata.eventCode },
+          { merge: true },
         ),
-        { name: matchScoutingMetadata.team },
-        { merge: true },
-      );
 
-      // ✅ Ensure match exists
-      await setDoc(
-        doc(
-          firestore,
-          "events",
-          matchScoutingMetadata.eventCode,
-          "teams",
-          matchScoutingMetadata.team,
-          "matches",
-          matchScoutingMetadata.match,
+        // ✅ Ensure team exists
+        setDoc(
+          doc(
+            firestore,
+            "events",
+            matchScoutingMetadata.eventCode,
+            "teams",
+            matchScoutingMetadata.team,
+          ),
+          { name: matchScoutingMetadata.team },
+          { merge: true },
         ),
-        { name: matchScoutingMetadata.match },
-        { merge: true },
-      );
+
+        // ✅ Ensure match exists
+        setDoc(
+          doc(
+            firestore,
+            "events",
+            matchScoutingMetadata.eventCode,
+            "teams",
+            matchScoutingMetadata.team,
+            "matches",
+            matchScoutingMetadata.match,
+          ),
+          { name: matchScoutingMetadata.match },
+          { merge: true },
+        ),
+      ]);
 
       // ✅ Now add dataset
       await addDoc(
@@ -289,7 +291,7 @@ function App() {
         </nav>
       )}
 
-      {currentPage === PageEnum.Settings && (
+      <div hidden={currentPage !== PageEnum.Settings}>
         <SettingsPage
           tbaKey={tbaKey}
           tbaKeyResponse={tbaKeyResponse}
@@ -301,15 +303,15 @@ function App() {
           onOfflineFormYes={submitOfflineForm}
           onOfflineFormNo={trashOfflineForm}
         />
-      )}
+      </div>
 
-      {currentPage === PageEnum.MatchScouting && (
+      <div hidden={currentPage !== PageEnum.MatchScouting}>
         <MatchScoutingPage
           tbaKey={tbaKey}
           tbaKeyResponse={tbaKeyResponse}
           onSubmit={submitMatchScoutingForm}
         />
-      )}
+      </div>
     </main>
   );
 }
