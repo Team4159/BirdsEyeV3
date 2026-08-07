@@ -331,8 +331,8 @@ export function MatchScoutingPage({
                       onClick={() => saveCurrentTeam(team)}
                       style={{ whiteSpace: "pre-line" }}
                     >
-                      <label>{`Red ${index + 1}
-                      ${team.substring(3)}`}</label>
+                      {`Red ${index + 1}
+                      ${team.substring(3)}`}
                     </button>
                   ))}
                 </div>
@@ -346,8 +346,8 @@ export function MatchScoutingPage({
                       onClick={() => saveCurrentTeam(team)}
                       style={{ whiteSpace: "pre-line" }}
                     >
-                      <label>{`Blue ${index + 1}
-                      ${team.substring(3)}`}</label>
+                      {`Blue ${index + 1}
+                      ${team.substring(3)}`}
                     </button>
                   ))}
                 </div>
