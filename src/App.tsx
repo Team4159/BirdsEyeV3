@@ -53,6 +53,95 @@ const firestore = initializeFirestore(app, {
 });
 const auth = getAuth(app);
 
+function deleteOldLocalStorage() {
+  try {
+    if (localStorage.getItem("currentEvent")) {
+      localStorage.removeItem("currentEvent");
+    }
+  } catch {
+    console.log("Failed to delete old local storage");
+  }
+}
+
+async function submitMatchScoutingForm(
+  matchScoutingMetadata: MatchScoutingMetadata,
+  matchScoutingData: MatchScoutingData,
+) {
+  try {
+    Promise.all([
+      // ✅ Ensure event exists
+      setDoc(
+        doc(firestore, "events", matchScoutingMetadata.eventCode),
+        { name: matchScoutingMetadata.eventCode },
+        { merge: true },
+      ),
+
+      // ✅ Ensure team exists
+      setDoc(
+        doc(
+          firestore,
+          "events",
+          matchScoutingMetadata.eventCode,
+          "teams",
+          matchScoutingMetadata.team,
+        ),
+        { name: matchScoutingMetadata.team },
+        { merge: true },
+      ),
+
+      // ✅ Ensure match exists
+      setDoc(
+        doc(
+          firestore,
+          "events",
+          matchScoutingMetadata.eventCode,
+          "teams",
+          matchScoutingMetadata.team,
+          "matches",
+          matchScoutingMetadata.match,
+        ),
+        { name: matchScoutingMetadata.match },
+        { merge: true },
+      ),
+    ]);
+
+    // ✅ Now add dataset
+    await addDoc(
+      collection(
+        firestore,
+        "events",
+        matchScoutingMetadata.eventCode,
+        "teams",
+        matchScoutingMetadata.team,
+        "matches",
+        matchScoutingMetadata.match,
+        "datasets",
+      ),
+      {
+        ...matchScoutingData,
+        email: auth.currentUser?.email,
+      },
+    );
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  } catch (e) {
+    // uncomment this if it's decided to no longer use Firebase's local cache
+    // it's also worth noting that this function will not error when there is no internet
+    // setOfflineFormQueue((p) => [
+    //   {
+    //     matchScoutingMetadata: matchScoutingMetadata,
+    //     matchScoutingData: matchScoutingData,
+    //   } as MatchScoutingForm,
+    //   ...p,
+    // ]);
+    console.error("Error adding document: " + e);
+    alert("Error saving match. Form data has been queued.");
+  }
+}
+
 function App() {
   const [autoLoginDone, setAutoLoginDone] = useState(false);
   const [currentPage, setCurrentPage] = useState(PageEnum.Login);
@@ -82,16 +171,6 @@ function App() {
     }
   }
 
-  function deleteOldLocalStorage() {
-    try {
-      if (localStorage.getItem("currentEvent")) {
-        localStorage.removeItem("currentEvent");
-      }
-    } catch {
-      console.log("Failed to delete old local storage");
-    }
-  }
-
   const gatekeepMatchScoutingPage = async (tbaKey: string) => {
     try {
       gatekeepMatchScoutingPageIndex.current += 1;
@@ -105,85 +184,6 @@ function App() {
       console.error("Failed to verify TBA key: ", error);
     }
   };
-
-  async function submitMatchScoutingForm(
-    matchScoutingMetadata: MatchScoutingMetadata,
-    matchScoutingData: MatchScoutingData,
-  ) {
-    try {
-      Promise.all([
-        // ✅ Ensure event exists
-        setDoc(
-          doc(firestore, "events", matchScoutingMetadata.eventCode),
-          { name: matchScoutingMetadata.eventCode },
-          { merge: true },
-        ),
-
-        // ✅ Ensure team exists
-        setDoc(
-          doc(
-            firestore,
-            "events",
-            matchScoutingMetadata.eventCode,
-            "teams",
-            matchScoutingMetadata.team,
-          ),
-          { name: matchScoutingMetadata.team },
-          { merge: true },
-        ),
-
-        // ✅ Ensure match exists
-        setDoc(
-          doc(
-            firestore,
-            "events",
-            matchScoutingMetadata.eventCode,
-            "teams",
-            matchScoutingMetadata.team,
-            "matches",
-            matchScoutingMetadata.match,
-          ),
-          { name: matchScoutingMetadata.match },
-          { merge: true },
-        ),
-      ]);
-
-      // ✅ Now add dataset
-      await addDoc(
-        collection(
-          firestore,
-          "events",
-          matchScoutingMetadata.eventCode,
-          "teams",
-          matchScoutingMetadata.team,
-          "matches",
-          matchScoutingMetadata.match,
-          "datasets",
-        ),
-        {
-          ...matchScoutingData,
-          email: auth.currentUser?.email,
-        },
-      );
-
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-    } catch (e) {
-      // uncomment this if it's decided to no longer use Firebase's local cache
-      // it's also worth noting that this function will not error when there is no internet
-      // setOfflineFormQueue((p) => [
-      //   {
-      //     matchScoutingMetadata: matchScoutingMetadata,
-      //     matchScoutingData: matchScoutingData,
-      //   } as MatchScoutingForm,
-      //   ...p,
-      // ]);
-      console.error("Error adding document: " + e);
-      alert("Error saving match. Form data has been queued.");
-    }
-  }
 
   function submitOfflineForm(form: MatchScoutingForm) {
     trashOfflineForm(form);

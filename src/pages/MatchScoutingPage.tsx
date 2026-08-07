@@ -25,6 +25,10 @@ type MatchScoutingPageProps = {
   ) => Promise<void>;
 };
 
+function createTeamsData() {
+  return { redAlliance: [], blueAlliance: [] };
+}
+
 export function MatchScoutingPage({
   tbaKey,
   tbaKeyResponse,
@@ -150,7 +154,7 @@ export function MatchScoutingPage({
 
   const populateTeams = useCallback(async () => {
     try {
-      const teamsData = { redAlliance: [], blueAlliance: [] };
+      const teamsData = createTeamsData();
       setTeams(teamsData);
       setMatchDataLoaded(false);
       //raw match data from tba
@@ -184,7 +188,6 @@ export function MatchScoutingPage({
   }
 
   function resetMatchScoutingData() {
-    saveCurrentMatch(getNextMatch(matchScoutingMetadata.match, matches));
     saveCurrentTeam("");
     saveMatchScoutingData(structuredClone(matchScoutingDataDefault));
   }
@@ -271,6 +274,7 @@ export function MatchScoutingPage({
                 saveCurrentEvent(eventCode, eventName);
                 saveCurrentMatch("");
                 saveCurrentTeam("");
+                setTeams(createTeamsData());
               }}
             />
 
@@ -309,6 +313,7 @@ export function MatchScoutingPage({
 
                 saveCurrentMatch(matchValue);
                 saveCurrentTeam("");
+                setTeams(createTeamsData());
               }}
             />
 
@@ -501,6 +506,9 @@ export function MatchScoutingPage({
                 onClick={async () => {
                   setMatchScoutingFormSending(true);
                   await onSubmit(matchScoutingMetadata, matchScoutingData);
+                  saveCurrentMatch(
+                    getNextMatch(matchScoutingMetadata.match, matches),
+                  );
                   resetMatchScoutingData();
                   setMatchScoutingFormSending(false);
                 }}
