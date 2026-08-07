@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Sun, Moon, Settings, Search, LogOut } from "lucide-react";
 import "./App.css";
 
@@ -60,6 +60,7 @@ function App() {
     return localStorage.getItem("tbaKey") || "";
   });
   const [tbaKeyResponse, setTbaKeyResponse] = useState<string | null>(null);
+  const gatekeepMatchScoutingPageIndex = useRef(0);
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem("darkMode") !== "light";
   });
@@ -73,8 +74,8 @@ function App() {
     },
   );
 
-  function openHomePage(tbaKeyOverride?: string) {
-    if ((tbaKeyOverride || tbaKey) === "") {
+  function openHomePage() {
+    if (tbaKey === "") {
       setCurrentPage(PageEnum.Settings);
     } else {
       setCurrentPage(PageEnum.MatchScouting);
@@ -93,9 +94,13 @@ function App() {
 
   const gatekeepMatchScoutingPage = async (tbaKey: string) => {
     try {
+      gatekeepMatchScoutingPageIndex.current += 1;
+      const currentIndex = gatekeepMatchScoutingPageIndex.current;
       setTbaKeyResponse("Verifying TBA API key...");
       const [, message] = await verifyTbaKey(tbaKey);
-      setTbaKeyResponse(message);
+      if (currentIndex == gatekeepMatchScoutingPageIndex.current) {
+        setTbaKeyResponse(message);
+      }
     } catch (error) {
       console.error("Failed to verify TBA key: ", error);
     }
@@ -196,7 +201,7 @@ function App() {
     onAuthStateChanged(auth, (user) => {
       setAutoLoginDone(true);
       if (user != null) {
-        openHomePage(tbaKey);
+        openHomePage();
       } else {
         setCurrentPage(PageEnum.Login);
       }
