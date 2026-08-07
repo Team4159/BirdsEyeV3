@@ -239,7 +239,7 @@ export function MatchScoutingPage({
   }
 
   return (
-    <div key="match-scouting-page" className="card">
+    <div className="card">
       <h1>Match Scouting</h1>
       {tbaKeyResponse === null ? (
         <div>
