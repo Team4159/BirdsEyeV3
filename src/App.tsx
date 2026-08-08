@@ -148,7 +148,7 @@ function App() {
   const [tbaKey, setTbaKey] = useState(() => {
     return localStorage.getItem("tbaKey") || "";
   });
-  const [tbaKeyResponse, setTbaKeyResponse] = useState<string | null>(null);
+  const [tbaKeyResponse, setTbaKeyResponse] = useState<string | null>("");
   const gatekeepMatchScoutingPageIndex = useRef(0);
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem("darkMode") !== "light";
