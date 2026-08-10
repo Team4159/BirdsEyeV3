@@ -1,6 +1,6 @@
 import type { StylesConfig } from "react-select";
 
-interface DropdownOption {
+export interface DropdownOption {
   label: string;
   value: string;
 }

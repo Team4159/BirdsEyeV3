@@ -8,7 +8,7 @@ import {
 } from "../util/matchUtil";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { fetchTbaData } from "../tba/fetchTbaData";
-import Select from "react-select";
+import Select, { createFilter } from "react-select";
 import {
   matchScoutingDataDefault,
   type MatchScoutingData,
@@ -28,6 +28,10 @@ type MatchScoutingPageProps = {
 function createTeamsData() {
   return { redAlliance: [], blueAlliance: [] };
 }
+
+const optionLabelFilter = createFilter({
+  stringify: (option) => option.label,
+});
 
 export function MatchScoutingPage({
   tbaKey,
@@ -258,6 +262,8 @@ export function MatchScoutingPage({
                 label: `${events.get(eventCode)} (${eventCode})`,
               }))}
 
+              filterOption={optionLabelFilter}
+
               value={
                 matchScoutingMetadata.eventCode
                   ? {
@@ -298,6 +304,8 @@ export function MatchScoutingPage({
                 value: match,
                 label: formatMatchLabel(match),
               }))}
+
+              filterOption={optionLabelFilter}
 
               value={
                 matchScoutingMetadata.match
