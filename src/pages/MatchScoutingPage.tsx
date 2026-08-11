@@ -43,7 +43,7 @@ export function MatchScoutingPage({
   const [matches, setMatches] = useState<string[]>([]);
   const [matchesLoaded, setMatchesLoaded] = useState(true);
   const [matchDataLoaded, setMatchDataLoaded] = useState(true);
-  const [teams, setTeams] = useState({ redAlliance: [], blueAlliance: [] });
+  const [teams, setTeams] = useState(createTeamsData());
   const [matchScoutingFormSending, setMatchScoutingFormSending] =
     useState(false);
   const [matchScoutingMetadata, setMatchScoutingMetadata] =
@@ -321,7 +321,6 @@ export function MatchScoutingPage({
 
                 saveCurrentMatch(matchValue);
                 saveCurrentTeam("");
-                setTeams(createTeamsData());
               }}
             />
 
@@ -329,42 +328,43 @@ export function MatchScoutingPage({
           </div>
           {matchScoutingMetadata.eventCode && matchScoutingMetadata.match ? (
             <div>
-              <div>
-                {teams.redAlliance.length > 0 ||
-                teams.blueAlliance.length > 0 ? (
-                  <h3>Team</h3>
-                ) : null}
+              {matchDataLoaded &&
+                (teams.redAlliance.length > 0 ||
+                  teams.blueAlliance.length > 0) && (
+                  <div>
+                    <h3>Team</h3>
 
-                {/* Red Alliance Row */}
-                <div className="teamGrid">
-                  {teams.redAlliance.map((team: string, index: number) => (
-                    <button
-                      key={team}
-                      className={`teamButton red ${matchScoutingMetadata.team === team ? "selected" : ""}`}
-                      onClick={() => saveCurrentTeam(team)}
-                      style={{ whiteSpace: "pre-line" }}
-                    >
-                      {`Red ${index + 1}
+                    {/* Red Alliance Row */}
+                    <div className="teamGrid">
+                      {teams.redAlliance.map((team: string, index: number) => (
+                        <button
+                          key={team}
+                          className={`teamButton red ${matchScoutingMetadata.team === team ? "selected" : ""}`}
+                          onClick={() => saveCurrentTeam(team)}
+                          style={{ whiteSpace: "pre-line" }}
+                        >
+                          {`Red ${index + 1}
                       ${team.substring(3)}`}
-                    </button>
-                  ))}
-                </div>
+                        </button>
+                      ))}
+                    </div>
 
-                {/* Blue Alliance Row */}
-                <div className="teamGrid">
-                  {teams.blueAlliance.map((team: string, index: number) => (
-                    <button
-                      key={team}
-                      className={`teamButton blue ${matchScoutingMetadata.team === team ? "selected" : ""}`}
-                      onClick={() => saveCurrentTeam(team)}
-                      style={{ whiteSpace: "pre-line" }}
-                    >
-                      {`Blue ${index + 1}
+                    {/* Blue Alliance Row */}
+                    <div className="teamGrid">
+                      {teams.blueAlliance.map((team: string, index: number) => (
+                        <button
+                          key={team}
+                          className={`teamButton blue ${matchScoutingMetadata.team === team ? "selected" : ""}`}
+                          onClick={() => saveCurrentTeam(team)}
+                          style={{ whiteSpace: "pre-line" }}
+                        >
+                          {`Blue ${index + 1}
                       ${team.substring(3)}`}
-                    </button>
-                  ))}
-                </div>
-              </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
               <div>
                 <h1>Autonomous</h1>
