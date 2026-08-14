@@ -20,7 +20,6 @@ import {
   onAuthStateChanged,
   signInWithCredential,
 } from "firebase/auth";
-import { GoogleLogin } from "@react-oauth/google";
 import { logOut } from "./firebase/auth";
 import { verifyTbaKey } from "./tba/verifyTbaKey";
 import { applyDarkMode } from "./ui/theme";
@@ -32,6 +31,7 @@ import type {
   MatchScoutingForm,
   MatchScoutingMetadata,
 } from "./models/MatchScouting";
+import { LoginPage } from "./pages/LoginPage";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -240,23 +240,16 @@ function App() {
 
   return (
     <main>
-      {currentPage === PageEnum.Login && (
-        <div className="login-button-container">
-          {autoLoginDone ? (
-            <GoogleLogin
-              onSuccess={async (credentialResponse) => {
-                const credential = GoogleAuthProvider.credential(
-                  credentialResponse.credential,
-                );
-                await signInWithCredential(auth, credential);
-                openHomePage();
-              }}
-              onError={() => {
-                console.log("Login Failed");
-              }}
-            />
-          ) : null}
-        </div>
+      {currentPage === PageEnum.Login && autoLoginDone && (
+        <LoginPage
+          onSuccess={async (credentialResponse) => {
+            const credential = GoogleAuthProvider.credential(
+              credentialResponse.credential,
+            );
+            await signInWithCredential(auth, credential);
+            openHomePage();
+          }}
+        />
       )}
 
       {currentPage !== PageEnum.Login && (
