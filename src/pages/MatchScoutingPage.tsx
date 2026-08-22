@@ -6,7 +6,7 @@ import {
   formatMatchLabel,
   getNextMatch,
 } from "../util/matchUtil";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { fetchTbaData } from "../tba/fetchTbaData";
 import Select, { createFilter } from "react-select";
 import {
@@ -25,7 +25,9 @@ type MatchScoutingPageProps = {
   ) => Promise<void>;
 };
 
-function createTeamsData() {
+type TeamsData = { redAlliance: string[], blueAlliance: string[] };
+
+function createTeamsData(): TeamsData {
   return { redAlliance: [], blueAlliance: [] };
 }
 
@@ -182,14 +184,12 @@ export function MatchScoutingPage({
     }
   }, [matchScoutingMetadata.match, tbaKey]);
 
-  function canSendData() {
-    return (
+  const canSendData = useMemo(() => (
       !matchScoutingFormSending &&
       matchScoutingMetadata.eventCode &&
       matchScoutingMetadata.match &&
       matchScoutingMetadata.team
-    );
-  }
+    ), [matchScoutingFormSending, matchScoutingMetadata.eventCode, matchScoutingMetadata.match, matchScoutingMetadata.team]);
 
   function resetMatchScoutingData() {
     saveCurrentTeam("");
@@ -230,7 +230,7 @@ export function MatchScoutingPage({
   //currentMatch effects
   {
     const previousMatch = useRef<string | null>(null);
-    useEffect(() => {
+    useLayoutEffect(() => {
       if (tbaKeyResponse !== null || !matchScoutingMetadata.match) {
         return;
       }
@@ -510,7 +510,7 @@ export function MatchScoutingPage({
               </div>
 
               <button
-                disabled={!canSendData()}
+                disabled={!canSendData}
                 onClick={async () => {
                   setMatchScoutingFormSending(true);
                   await onSubmit(matchScoutingMetadata, matchScoutingData);
