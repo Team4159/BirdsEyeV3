@@ -74,7 +74,8 @@ h3 {
     align-items: center;
     justify-content: space-between;
     margin-top: 6px;
-    flex-wrap: wrap; /* allow wrapping if too wide */
+    flex-wrap: wrap;
+    /* allow wrapping if too wide */
     gap: 6px;
 }
 
@@ -96,6 +97,7 @@ a {
     color: #646cff;
     text-decoration: inherit;
 }
+
 a:hover {
     color: #535bf2;
 }
@@ -174,13 +176,17 @@ button:focus-visible {
 }
 
 .slidecontainer {
-    width: 100%; /* ensures the container doesn't exceed card width */
-    margin: 12px 0; /* optional spacing */
+    width: 100%;
+    /* ensures the container doesn't exceed card width */
+    margin: 12px 0;
+    /* optional spacing */
 }
 
 .slider {
-    width: 100%; /* make slider fill the container */
-    margin: 12px 0; /* optional spacing */
+    width: 100%;
+    /* make slider fill the container */
+    margin: 12px 0;
+    /* optional spacing */
     margin-top: 0px;
     padding: 0px;
     border: 0px;
@@ -188,7 +194,8 @@ button:focus-visible {
 
 .teamGrid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 columns */
+    grid-template-columns: repeat(3, 1fr);
+    /* 3 columns */
     gap: 8px;
     margin: 8px 0;
 }
@@ -213,7 +220,8 @@ button:focus-visible {
 }
 
 .teamButton.selected {
-    border-color: yellow; /* highlight selected */
+    border-color: yellow;
+    /* highlight selected */
     transform: scale(1.05);
 }
 
@@ -223,7 +231,8 @@ button:focus-visible {
 }
 
 .passwordWrapper input {
-    padding-right: 40px; /* space for icon */
+    padding-right: 40px;
+    /* space for icon */
 }
 
 .passwordToggle {
@@ -244,7 +253,8 @@ button:focus-visible {
 }
 
 .passwordToggle::after {
-    display: none; /* disable your button ripple effect */
+    display: none;
+    /* disable your button ripple effect */
 }
 
 .inputError {
@@ -261,10 +271,12 @@ button:focus-visible {
 .animate-spin {
     animation: spin 1s cubic-bezier(0.17, 0.67, 0.83, 0.67) infinite;
 }
+
 @keyframes spin {
     from {
         transform: rotate(0deg);
     }
+
     to {
         transform: rotate(360deg);
     }
