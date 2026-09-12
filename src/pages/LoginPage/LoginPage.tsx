@@ -1,31 +1,31 @@
-import { GoogleLogin, type CredentialResponse } from "@react-oauth/google";
-import { useState } from "react";
-import styles from "./LoginPage.module.css";
+import "./LoginPage.css";
+import { type CredentialResponse, GoogleLogin } from "@react-oauth/google";
+import react from "react";
 
 type LoginPageProps = {
-  onSuccess: (credentialResponse: CredentialResponse) => Promise<void>;
+	onSuccess: (credentialResponse: CredentialResponse) => Promise<void>;
 };
 
-export function LoginPage({ onSuccess }: LoginPageProps) {
-  const [loginDebounce, setLoginDebounce] = useState(false);
+export default function LoginPage({ onSuccess }: LoginPageProps) {
+	const [loginDebounce, setLoginDebounce] = react.useState(false);
 
-  return (
-    <div className={styles["login-button-container"]}>
-      {!loginDebounce && (
-        <GoogleLogin
-          onSuccess={async (credentialResponse) => {
-            if (loginDebounce) {
-              return;
-            }
-            setLoginDebounce(true);
-            await onSuccess(credentialResponse);
-            setLoginDebounce(false);
-          }}
-          onError={() => {
-            console.log("Login Failed");
-          }}
-        />
-      )}
-    </div>
-  );
+	return (
+		<div className="login-button-container">
+			{!loginDebounce && (
+				<GoogleLogin
+					onSuccess={async (credentialResponse) => {
+						if (loginDebounce) {
+							return;
+						}
+						setLoginDebounce(true);
+						await onSuccess(credentialResponse);
+						setLoginDebounce(false);
+					}}
+					onError={() => {
+						console.log("Login Failed");
+					}}
+				/>
+			)}
+		</div>
+	);
 }
