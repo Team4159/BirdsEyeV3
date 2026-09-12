@@ -1,6 +1,6 @@
 import { LogOut, Moon, Search, Settings, Sun } from "lucide-react";
 import { logOut } from "../../firebase/auth";
-import { PageEnum, type PageType } from "../../pages/PageEnum";
+import { Page, type PageType } from "../../pages/Page";
 import type React from "react";
 import styles from "./Navbar.module.css";
 
@@ -23,7 +23,7 @@ export function Navbar({ setCurrentPage, darkMode, setDarkMode }: NavbarProps) {
 
       <button
         onClick={() => {
-          setCurrentPage(PageEnum.Settings);
+          setCurrentPage(Page.Settings);
         }}
       >
         <Settings size={20} />
@@ -31,7 +31,7 @@ export function Navbar({ setCurrentPage, darkMode, setDarkMode }: NavbarProps) {
 
       <button
         onClick={() => {
-          setCurrentPage(PageEnum.MatchScouting);
+          setCurrentPage(Page.MatchScouting);
         }}
       >
         <Search size={20} />
@@ -40,7 +40,7 @@ export function Navbar({ setCurrentPage, darkMode, setDarkMode }: NavbarProps) {
       <button
         onClick={() => {
           logOut();
-          setCurrentPage(PageEnum.Login);
+          setCurrentPage(Page.Login);
         }}
       >
         <LogOut size={20} />

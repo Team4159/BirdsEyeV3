@@ -21,7 +21,7 @@ import {
 } from "firebase/auth";
 import { verifyTbaKey } from "./tba/verifyTbaKey";
 import { applyDarkMode } from "./ui/theme";
-import { PageEnum, type PageType } from "./pages/PageEnum";
+import { Page, type PageType } from "./pages/Page";
 import { SettingsPage } from "./pages/SettingsPage/SettingsPage";
 import { MatchScoutingPage } from "./pages/MatchScoutingPage/MatchScoutingPage";
 import type {
@@ -143,7 +143,7 @@ async function submitMatchScoutingForm(
 
 function App() {
   const [autoLoginDone, setAutoLoginDone] = useState(false);
-  const [currentPage, setCurrentPage] = useState<PageType>(PageEnum.Login);
+  const [currentPage, setCurrentPage] = useState<PageType>(Page.Login);
   const [tbaKey, setTbaKey] = useState(() => {
     return localStorage.getItem("tbaKey") || "";
   });
@@ -164,9 +164,9 @@ function App() {
 
   function openHomePage() {
     if (tbaKey === "") {
-      setCurrentPage(PageEnum.Settings);
+      setCurrentPage(Page.Settings);
     } else {
-      setCurrentPage(PageEnum.MatchScouting);
+      setCurrentPage(Page.MatchScouting);
     }
   }
 
@@ -202,7 +202,7 @@ function App() {
       if (user != null) {
         openHomePage();
       } else {
-        setCurrentPage(PageEnum.Login);
+        setCurrentPage(Page.Login);
       }
     });
     (async () => gatekeepMatchScoutingPage(tbaKey))();
@@ -239,7 +239,7 @@ function App() {
 
   return (
     <main>
-      {currentPage === PageEnum.Login && autoLoginDone && (
+      {currentPage === Page.Login && autoLoginDone && (
         <LoginPage
           onSuccess={async (credentialResponse) => {
             const credential = GoogleAuthProvider.credential(
@@ -251,7 +251,7 @@ function App() {
         />
       )}
 
-      {currentPage !== PageEnum.Login && (
+      {currentPage !== Page.Login && (
         <Navbar
           setCurrentPage={setCurrentPage}
           darkMode={darkMode}
@@ -259,7 +259,7 @@ function App() {
         />
       )}
 
-      <div hidden={currentPage !== PageEnum.Settings}>
+      <div hidden={currentPage !== Page.Settings}>
         <SettingsPage
           tbaKey={tbaKey}
           tbaKeyResponse={tbaKeyResponse}
@@ -273,7 +273,7 @@ function App() {
         />
       </div>
 
-      <div hidden={currentPage !== PageEnum.MatchScouting}>
+      <div hidden={currentPage !== Page.MatchScouting}>
         <MatchScoutingPage
           tbaKey={tbaKey}
           tbaKeyResponse={tbaKeyResponse}
