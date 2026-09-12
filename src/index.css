@@ -9,6 +9,8 @@
     --button-hover: #585858;
 
     --accent: #22c55e;
+
+    --error: #ef4444;
 }
 
 body.light {

@@ -4,41 +4,6 @@
     box-sizing: border-box;
 }
 
-.login-button-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-
-.card {
-    background: var(--card);
-    border-radius: 14px;
-    padding: 18px;
-    margin-bottom: 18px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.navBar {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-
-    padding: 10px;
-    margin-bottom: 16px;
-
-    background: var(--card);
-    border-radius: 12px;
-}
-
-.navBar button {
-    flex: 1;
-}
-
 input,
 select,
 textarea {
@@ -67,29 +32,6 @@ h3 {
     margin-top: 12px;
     margin-bottom: 6px;
     font-size: 1rem;
-}
-
-.datatable {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 6px;
-    flex-wrap: wrap;
-    /* allow wrapping if too wide */
-    gap: 6px;
-}
-
-.datatable button {
-    flex: 1;
-    min-height: 44px;
-    font-weight: 600;
-}
-
-.datatable span {
-    font-size: 20px;
-    font-weight: bold;
-    min-width: 40px;
-    text-align: center;
 }
 
 a {
@@ -145,46 +87,40 @@ button:focus-visible {
     outline: 4px auto -webkit-focus-ring-color;
 }
 
-.redAlliance {
-    background: #b91c1c;
-    color: white;
+.card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 18px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.blueAlliance {
-    background: #1d4ed8;
-    color: white;
-}
-
-.saveButton {
-    width: 100%;
-    padding: 16px;
-    font-size: 18px;
-    font-weight: 600;
-
-    border: none;
-    border-radius: 12px;
-
-    background: var(--accent);
-    color: white;
-
-    margin-top: 16px;
-
+.data-table {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
+    justify-content: space-between;
+    margin-top: 6px;
+    flex-wrap: wrap;
+    /* allow wrapping if too wide */
+    gap: 6px;
 }
 
-.slidecontainer {
-    width: 100%;
-    /* ensures the container doesn't exceed card width */
-    margin: 12px 0;
-    /* optional spacing */
+.data-table button {
+    flex: 1;
+    min-height: 44px;
+    font-weight: 600;
 }
 
-.slider {
+.data-table span {
+    font-size: 20px;
+    font-weight: bold;
+    min-width: 40px;
+    text-align: center;
+}
+
+.slider-container {
     width: 100%;
-    /* make slider fill the container */
+    /* make slider-container fill the container */
     margin: 12px 0;
     /* optional spacing */
     margin-top: 0px;
@@ -192,114 +128,6 @@ button:focus-visible {
     border: 0px;
 }
 
-.teamGrid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    /* 3 columns */
-    gap: 8px;
-    margin: 8px 0;
-}
-
-.teamButton {
-    padding: 12px;
-    border-radius: 8px;
-    border: 2px solid transparent;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.teamButton.red {
-    background-color: #b91c1c;
-    color: white;
-}
-
-.teamButton.blue {
-    background-color: #1d4ed8;
-    color: white;
-}
-
-.teamButton.selected {
-    border-color: yellow;
-    /* highlight selected */
-    transform: scale(1.05);
-}
-
-.passwordWrapper {
-    position: relative;
-    width: 100%;
-}
-
-.passwordWrapper input {
-    padding-right: 40px;
-    /* space for icon */
-}
-
-.passwordToggle {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-
-    background: none;
-    border: none;
-    padding: 0;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    cursor: pointer;
-}
-
-.passwordToggle::after {
-    display: none;
-    /* disable your button ripple effect */
-}
-
-.inputError {
-    border: 1px solid #ef4444 !important;
-}
-
-.authError {
-    color: #ef4444;
-    font-size: 14px;
-    margin-top: 6px;
-    font-weight: 500;
-}
-
-.animate-spin {
-    animation: spin 1s cubic-bezier(0.17, 0.67, 0.83, 0.67) infinite;
-}
-
-@keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
-
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-.square-button {
-    width: auto;
-    aspect-ratio: 1;
-    flex: none !important;
-}
-
-.binary-action-button.yes {
-    background-color: #5bc450;
-}
-
-.binary-action-button.yes:hover {
-    background-color: #73db67;
-}
-
-.binary-action-button.no {
-    background-color: #e04444;
-}
-
-.binary-action-button.no:hover {
-    background-color: #f75b5b;
+.input-error {
+    border: 1px solid var(--error) !important;
 }

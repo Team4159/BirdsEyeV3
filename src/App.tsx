@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import { Sun, Moon, Settings, Search, LogOut } from "lucide-react";
 import "./App.css";
 
 //firebase
@@ -20,18 +19,18 @@ import {
   onAuthStateChanged,
   signInWithCredential,
 } from "firebase/auth";
-import { logOut } from "./firebase/auth";
 import { verifyTbaKey } from "./tba/verifyTbaKey";
 import { applyDarkMode } from "./ui/theme";
-import { PageEnum } from "./pages/PageEnum";
-import { SettingsPage } from "./pages/SettingsPage";
-import { MatchScoutingPage } from "./pages/MatchScoutingPage";
+import { PageEnum, type PageType } from "./pages/PageEnum";
+import { SettingsPage } from "./pages/SettingsPage/SettingsPage";
+import { MatchScoutingPage } from "./pages/MatchScoutingPage/MatchScoutingPage";
 import type {
   MatchScoutingData,
   MatchScoutingForm,
   MatchScoutingMetadata,
 } from "./models/MatchScouting";
-import { LoginPage } from "./pages/LoginPage";
+import { LoginPage } from "./pages/LoginPage/LoginPage";
+import { Navbar } from "./ui/Navbar/Navbar";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -144,7 +143,7 @@ async function submitMatchScoutingForm(
 
 function App() {
   const [autoLoginDone, setAutoLoginDone] = useState(false);
-  const [currentPage, setCurrentPage] = useState(PageEnum.Login);
+  const [currentPage, setCurrentPage] = useState<PageType>(PageEnum.Login);
   const [tbaKey, setTbaKey] = useState(() => {
     return localStorage.getItem("tbaKey") || "";
   });
@@ -253,40 +252,11 @@ function App() {
       )}
 
       {currentPage !== PageEnum.Login && (
-        <nav className="navBar">
-          <button
-            onClick={() => {
-              setDarkMode((p) => !p);
-            }}
-          >
-            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-          </button>
-
-          <button
-            onClick={() => {
-              setCurrentPage(PageEnum.Settings);
-            }}
-          >
-            <Settings size={20} />
-          </button>
-
-          <button
-            onClick={() => {
-              setCurrentPage(PageEnum.MatchScouting);
-            }}
-          >
-            <Search size={20} />
-          </button>
-
-          <button
-            onClick={() => {
-              logOut();
-              setCurrentPage(PageEnum.Login);
-            }}
-          >
-            <LogOut size={20} />
-          </button>
-        </nav>
+        <Navbar
+          setCurrentPage={setCurrentPage}
+          darkMode={darkMode}
+          setDarkMode={setDarkMode}
+        />
       )}
 
       <div hidden={currentPage !== PageEnum.Settings}>

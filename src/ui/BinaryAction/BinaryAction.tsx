@@ -1,4 +1,5 @@
 import type { LucideIcon } from "lucide-react";
+import styles from "./BinaryAction.module.css";
 
 type BinaryActionProps = {
   label: string;
@@ -16,8 +17,11 @@ export function BinaryAction({
   noIcon: NoIcon,
 }: BinaryActionProps) {
   return (
-    <div className="datatable">
-      <button onClick={onNo} className="square-button binary-action-button no">
+    <div className="data-table">
+      <button
+        onClick={onNo}
+        className={`${styles["square-button"]} ${styles["binary-action-button"]} ${styles["no"]}`}
+      >
         {NoIcon ? <NoIcon /> : "No"}
       </button>
 
@@ -25,7 +29,7 @@ export function BinaryAction({
 
       <button
         onClick={onYes}
-        className="square-button binary-action-button yes"
+        className={`${styles["square-button"]} ${styles["binary-action-button"]} ${styles["yes"]}`}
       >
         {YesIcon ? <YesIcon /> : "Yes"}
       </button>

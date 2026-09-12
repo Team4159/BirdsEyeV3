@@ -1,20 +1,28 @@
 import { Loader2, Save } from "lucide-react";
-import { Counter } from "../ui/Counter";
-import { selectStyles } from "../ui/selectStyles";
+import { Counter } from "../../ui/Counter/Counter";
+import { selectStyles } from "../../ui/selectStyles";
 import {
   compareMatchKeys,
   formatMatchLabel,
   getNextMatch,
-} from "../util/matchUtil";
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { fetchTbaData } from "../tba/fetchTbaData";
+} from "../../util/matchUtil";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { fetchTbaData } from "../../tba/fetchTbaData";
 import Select, { createFilter } from "react-select";
 import {
   matchScoutingDataDefault,
   type MatchScoutingData,
   type MatchScoutingMetadata,
-} from "../models/MatchScouting";
-import { YEAR } from "../util/year";
+} from "../../models/MatchScouting";
+import { YEAR } from "../../util/year";
+import styles from "./MatchScoutingPage.module.css";
 
 type MatchScoutingPageProps = {
   tbaKey: string;
@@ -25,7 +33,7 @@ type MatchScoutingPageProps = {
   ) => Promise<void>;
 };
 
-type TeamsData = { redAlliance: string[], blueAlliance: string[] };
+type TeamsData = { redAlliance: string[]; blueAlliance: string[] };
 
 function createTeamsData(): TeamsData {
   return { redAlliance: [], blueAlliance: [] };
@@ -184,12 +192,19 @@ export function MatchScoutingPage({
     }
   }, [matchScoutingMetadata.match, tbaKey]);
 
-  const canSendData = useMemo(() => (
+  const canSendData = useMemo(
+    () =>
       !matchScoutingFormSending &&
       matchScoutingMetadata.eventCode &&
       matchScoutingMetadata.match &&
-      matchScoutingMetadata.team
-    ), [matchScoutingFormSending, matchScoutingMetadata.eventCode, matchScoutingMetadata.match, matchScoutingMetadata.team]);
+      matchScoutingMetadata.team,
+    [
+      matchScoutingFormSending,
+      matchScoutingMetadata.eventCode,
+      matchScoutingMetadata.match,
+      matchScoutingMetadata.team,
+    ],
+  );
 
   function resetMatchScoutingData() {
     saveCurrentTeam("");
@@ -335,11 +350,11 @@ export function MatchScoutingPage({
                     <h3>Team</h3>
 
                     {/* Red Alliance Row */}
-                    <div className="teamGrid">
+                    <div className={styles["team-grid"]}>
                       {teams.redAlliance.map((team: string, index: number) => (
                         <button
                           key={team}
-                          className={`teamButton red ${matchScoutingMetadata.team === team ? "selected" : ""}`}
+                          className={`${styles["team-button"]} ${styles["red"]} ${styles[matchScoutingMetadata.team === team ? "selected" : ""]}`}
                           onClick={() => saveCurrentTeam(team)}
                           style={{ whiteSpace: "pre-line" }}
                         >
@@ -350,11 +365,11 @@ export function MatchScoutingPage({
                     </div>
 
                     {/* Blue Alliance Row */}
-                    <div className="teamGrid">
+                    <div className={styles["team-grid"]}>
                       {teams.blueAlliance.map((team: string, index: number) => (
                         <button
                           key={team}
-                          className={`teamButton blue ${matchScoutingMetadata.team === team ? "selected" : ""}`}
+                          className={`${styles["team-button"]} ${styles["blue"]} ${styles[matchScoutingMetadata.team === team ? "selected" : ""]}`}
                           onClick={() => saveCurrentTeam(team)}
                           style={{ whiteSpace: "pre-line" }}
                         >
@@ -379,7 +394,7 @@ export function MatchScoutingPage({
                     })
                   }
                 />
-                <p className="block text-sm font-medium mb-2">Climb Status</p>
+                <p>Climb Status</p>
                 <select
                   id="auto-climb-form"
                   value={matchScoutingData.autoClimb}
@@ -424,7 +439,7 @@ export function MatchScoutingPage({
 
               <div>
                 <h1>Endgame</h1>
-                <p className="block text-sm font-medium mb-2">Climb Status</p>
+                <p>Climb Status</p>
                 <select
                   id="endgame-climb-form"
                   value={matchScoutingData.endgameClimb}
@@ -486,8 +501,8 @@ export function MatchScoutingPage({
                   min="1"
                   max="5"
                   value={matchScoutingData.driverRating}
-                  className="slider"
-                  id="driver-rating-slider"
+                  className="slider-container"
+                  id="driver-rating-slider-container"
                   onChange={(e) =>
                     saveMatchScoutingData({
                       ...matchScoutingData,
@@ -520,10 +535,10 @@ export function MatchScoutingPage({
                   resetMatchScoutingData();
                   setMatchScoutingFormSending(false);
                 }}
-                className="saveButton"
+                className={styles["save-button"]}
               >
                 {matchScoutingFormSending ? (
-                  <Loader2 className="animate-spin" size="22" />
+                  <Loader2 className={styles["animate-spin"]} size="22" />
                 ) : (
                   <Save size="22" />
                 )}

@@ -10,7 +10,7 @@ export function Counter({ label, value, increments, onChange }: CounterProps) {
     <div>
       <span className="text-sm font-medium">{label}</span>
 
-      <div className="datatable">
+      <div className="data-table">
         {/* Decrement buttons */}
         {increments.map((inc) => (
           <button

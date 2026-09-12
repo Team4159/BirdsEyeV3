@@ -1,5 +1,6 @@
 import { GoogleLogin, type CredentialResponse } from "@react-oauth/google";
 import { useState } from "react";
+import styles from "./LoginPage.module.css";
 
 type LoginPageProps = {
   onSuccess: (credentialResponse: CredentialResponse) => Promise<void>;
@@ -9,7 +10,7 @@ export function LoginPage({ onSuccess }: LoginPageProps) {
   const [loginDebounce, setLoginDebounce] = useState(false);
 
   return (
-    <div className="login-button-container">
+    <div className={styles["login-button-container"]}>
       {!loginDebounce && (
         <GoogleLogin
           onSuccess={async (credentialResponse) => {

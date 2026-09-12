@@ -1,7 +1,7 @@
 import { Send, Trash2 } from "lucide-react";
-import { BinaryAction } from "../ui/BinaryAction";
-import { formatMatchLabel } from "../util/matchUtil";
-import type { MatchScoutingForm } from "../models/MatchScouting";
+import { BinaryAction } from "../../ui/BinaryAction/BinaryAction";
+import { formatMatchLabel } from "../../util/matchUtil";
+import type { MatchScoutingForm } from "../../models/MatchScouting";
 
 type SettingsPageProps = {
   tbaKey: string;
