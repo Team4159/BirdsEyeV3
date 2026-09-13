@@ -394,7 +394,7 @@ export default function MatchScoutingPage({
                     value: value,
                     label: ClimbLabel[value],
                   }))}
-                  filterOption={optionLabelFilter}
+                  isSearchable={false}
                   value={
                     matchScoutingData.autoClimb
                       ? {
@@ -449,7 +449,7 @@ export default function MatchScoutingPage({
                     value: value,
                     label: ClimbLabel[value],
                   }))}
-                  filterOption={optionLabelFilter}
+                  isSearchable={false}
                   value={
                     matchScoutingData.endgameClimb
                       ? {
