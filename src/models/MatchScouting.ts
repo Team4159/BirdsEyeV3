@@ -27,10 +27,10 @@ export type MatchScoutingForm = {
 };
 
 export type ClimbLabel = Record<string, string>;
-export const ClimbLabel: ClimbLabel = {
+export const ClimbLabel: ClimbLabel = Object.freeze({
   none: "No Climb",
   l1auto: "Level 1 (15 points)",
   l1: "Level 1 (10 points)",
   l2: "Level 2 (20 points)",
   l3: "Level 3 (30 points)",
-} as const;
+} as const);
