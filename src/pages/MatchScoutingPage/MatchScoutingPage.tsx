@@ -10,12 +10,13 @@ import {
 } from "react";
 import Select, { createFilter } from "react-select";
 import {
+  ClimbLabel,
   type MatchScoutingData,
   type MatchScoutingMetadata,
   matchScoutingDataDefault,
 } from "../../models/MatchScouting";
 import { fetchTbaData } from "../../tba/fetchTbaData";
-import { Counter as Counter_1 } from "../../ui/Counter/Counter";
+import { Counter } from "../../ui/Counter/Counter";
 import { selectStyles } from "../../ui/selectStyles";
 import {
   compareMatchKeys,
@@ -374,7 +375,7 @@ export default function MatchScoutingPage({
 
               <div>
                 <h1>Autonomous</h1>
-                <Counter_1
+                <Counter
                   label="Auto Fuels"
                   value={matchScoutingData.autoFuels}
                   increments={[1, 5]}
@@ -386,19 +387,29 @@ export default function MatchScoutingPage({
                   }
                 />
                 <p>Climb Status</p>
-                <select
+                <Select
                   id="auto-climb-form"
-                  value={matchScoutingData.autoClimb}
+                  styles={selectStyles}
+                  options={["none", "l1auto"].map((value) => ({
+                    value: value,
+                    label: ClimbLabel[value],
+                  }))}
+                  filterOption={optionLabelFilter}
+                  value={
+                    matchScoutingData.autoClimb
+                      ? {
+                          value: matchScoutingData.autoClimb,
+                          label: ClimbLabel[matchScoutingData.autoClimb],
+                        }
+                      : null
+                  }
                   onChange={(e) =>
                     saveMatchScoutingData({
                       ...matchScoutingData,
-                      autoClimb: e.target.value,
+                      autoClimb: e?.value || "none",
                     })
                   }
-                >
-                  <option value="none">No Climb</option>
-                  <option value="l1auto">Level 1 (15 pts)</option>
-                </select>
+                />
                 <p>Auto Notes</p>
                 <textarea
                   id="auto-notes-form"
@@ -415,7 +426,7 @@ export default function MatchScoutingPage({
 
               <div>
                 <h1>Teleop</h1>
-                <Counter_1
+                <Counter
                   label="Teleop Fuels"
                   value={matchScoutingData.teleopFuels}
                   increments={[1, 5]}
@@ -431,26 +442,34 @@ export default function MatchScoutingPage({
               <div>
                 <h1>Endgame</h1>
                 <p>Climb Status</p>
-                <select
+                <Select
                   id="endgame-climb-form"
-                  value={matchScoutingData.endgameClimb}
+                  styles={selectStyles}
+                  options={["none", "l1", "l2", "l3"].map((value) => ({
+                    value: value,
+                    label: ClimbLabel[value],
+                  }))}
+                  filterOption={optionLabelFilter}
+                  value={
+                    matchScoutingData.endgameClimb
+                      ? {
+                          value: matchScoutingData.endgameClimb,
+                          label: ClimbLabel[matchScoutingData.endgameClimb],
+                        }
+                      : null
+                  }
                   onChange={(e) =>
                     saveMatchScoutingData({
                       ...matchScoutingData,
-                      endgameClimb: e.target.value,
+                      endgameClimb: e?.value || "none",
                     })
                   }
-                >
-                  <option value="none">No Climb</option>
-                  <option value="l1">Level 1 (10 pts)</option>
-                  <option value="l2">Level 2 (20 pts)</option>
-                  <option value="l3">Level 3 (30 pts)</option>
-                </select>
+                />
               </div>
 
               <div>
                 <h1>Fouls</h1>
-                <Counter_1
+                <Counter
                   label="Fouls"
                   value={matchScoutingData.fouls}
                   increments={[1]}
@@ -461,7 +480,7 @@ export default function MatchScoutingPage({
                     })
                   }
                 />
-                <Counter_1
+                <Counter
                   label="Tech Fouls"
                   value={matchScoutingData.techFouls}
                   increments={[1]}

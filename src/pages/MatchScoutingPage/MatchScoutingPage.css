@@ -1,66 +1,66 @@
 .team-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  /* 3 columns */
-  gap: 8px;
-  margin: 8px 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    /* 3 columns */
+    gap: 8px;
+    margin: 8px 0;
 }
 
 .team-button {
-  padding: 12px;
-  border-radius: 8px;
-  border: 2px solid transparent;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.2s ease;
+    padding: 12px;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
 .team-button.red {
-  background-color: #b91c1c;
-  color: white;
+    background-color: #b91c1c;
+    color: white;
 }
 
 .team-button.blue {
-  background-color: #1d4ed8;
-  color: white;
+    background-color: #1d4ed8;
+    color: white;
 }
 
 .team-button.selected {
-  border-color: yellow;
-  /* highlight selected */
-  transform: scale(1.05);
+    border-color: yellow;
+    /* highlight selected */
+    transform: scale(1.05);
 }
 
 .save-button {
-  width: 100%;
-  padding: 16px;
-  font-size: 18px;
-  font-weight: 600;
+    width: 100%;
+    padding: 16px;
+    font-size: 18px;
+    font-weight: 600;
 
-  border: none;
-  border-radius: 12px;
+    border: none;
+    border-radius: 12px;
 
-  background: var(--accent);
-  color: white;
+    background: var(--accent);
+    color: white;
 
-  margin-top: 16px;
+    margin-top: 16px;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
 .animate-spin {
-  animation: spin 1s cubic-bezier(0.17, 0.67, 0.83, 0.67) infinite;
+    animation: spin 1s cubic-bezier(0.17, 0.67, 0.83, 0.67) infinite;
 }
 
 @keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
+    from {
+        transform: rotate(0deg);
+    }
 
-  to {
-    transform: rotate(360deg);
-  }
+    to {
+        transform: rotate(360deg);
+    }
 }

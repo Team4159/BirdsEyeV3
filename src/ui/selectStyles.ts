@@ -26,7 +26,12 @@ export const selectStyles: StylesConfig<DropdownOption, false> = {
     ...base,
     backgroundColor: state.isFocused ? "var(--button-hover)" : "var(--card)",
     color: "var(--text)",
+    textDecoration: state.isSelected ? "underline" : base.fontWeight,
     cursor: "pointer",
+    ":active": {
+      ...base[":active"],
+      backgroundColor: "var(--button-press)", // Your specific click color
+    },
   }),
 
   singleValue: (base) => ({
