@@ -1,41 +1,41 @@
 {
-	"name": "birdseye-v3",
-	"homepage": "https://Team4159.github.io/BirdsEyeV3/",
-	"private": true,
-	"version": "0.0.0",
-	"type": "module",
-	"scripts": {
-		"dev": "vite",
-		"build": "tsc -b && vite build",
-		"lint": "biome check .",
-		"preview": "vite preview",
-		"predeploy": "npm run build",
-		"deploy": "gh-pages -d dist"
-	},
-	"dependencies": {
-		"@react-oauth/google": "^0.13.5",
-		"firebase": "^12.19.0",
-		"gh-pages": "^6.3.0",
-		"lucide-react": "^1.45.0",
-		"react": "^19.3.0",
-		"react-dom": "^19.3.0",
-		"react-select": "^5.10.2"
-	},
-	"devDependencies": {
-		"@babel/core": "^8.0.5",
-		"@biomejs/biome": "^2.5.13",
-		"@rolldown/plugin-babel": "^0.2.4",
-		"@types/node": "^22.20.2",
-		"@types/react": "^19.3.0",
-		"@types/react-dom": "^19.3.0",
-		"@vitejs/plugin-react": "^6.1.1",
-		"babel-plugin-react-compiler": "^1.0.0",
-		"globals": "^17.12.0",
-		"typescript": "^7.0.2",
-		"vite": "^8.3.0"
-	},
-	"allowScripts": {
-		"@firebase/util@1.15.3": true,
-		"protobufjs@7.6.6": true
-	}
+  "name": "birdseye-v3",
+  "homepage": "https://Team4159.github.io/BirdsEyeV3/",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "biome check .",
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
+  },
+  "dependencies": {
+    "@react-oauth/google": "^0.13.5",
+    "firebase": "^12.19.0",
+    "gh-pages": "^6.3.0",
+    "lucide-react": "^1.45.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "react-select": "^5.10.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^8.0.5",
+    "@biomejs/biome": "^2.5.13",
+    "@rolldown/plugin-babel": "^0.2.4",
+    "@types/node": "^22.20.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "babel-plugin-react-compiler": "^1.0.0",
+    "globals": "^17.12.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.0"
+  },
+  "allowScripts": {
+    "@firebase/util@1.15.3": true,
+    "protobufjs@7.6.6": true
+  }
 }

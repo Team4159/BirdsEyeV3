@@ -2,39 +2,39 @@ import "./BinaryAction.css";
 import type { LucideIcon } from "lucide-react";
 
 type BinaryActionProps = {
-	label: string;
-	onYes: () => void;
-	onNo: () => void;
-	yesIcon: LucideIcon;
-	noIcon: LucideIcon;
+  label: string;
+  onYes: () => void;
+  onNo: () => void;
+  yesIcon: LucideIcon;
+  noIcon: LucideIcon;
 };
 
 export function BinaryAction({
-	label,
-	onYes,
-	onNo,
-	yesIcon: YesIcon,
-	noIcon: NoIcon,
+  label,
+  onYes,
+  onNo,
+  yesIcon: YesIcon,
+  noIcon: NoIcon,
 }: BinaryActionProps) {
-	return (
-		<div className="data-table">
-			<button
-				type="button"
-				onClick={onNo}
-				className="square-button binary-action-button no"
-			>
-				{NoIcon ? <NoIcon /> : "No"}
-			</button>
+  return (
+    <div className="data-table">
+      <button
+        type="button"
+        onClick={onNo}
+        className="square-button binary-action-button no"
+      >
+        {NoIcon ? <NoIcon /> : "No"}
+      </button>
 
-			<span style={{ flexGrow: 1, textAlign: "center" }}>{label}</span>
+      <span style={{ flexGrow: 1, textAlign: "center" }}>{label}</span>
 
-			<button
-				type="button"
-				onClick={onYes}
-				className="square-button binary-action-button yes"
-			>
-				{YesIcon ? <YesIcon /> : "Yes"}
-			</button>
-		</div>
-	);
+      <button
+        type="button"
+        onClick={onYes}
+        className="square-button binary-action-button yes"
+      >
+        {YesIcon ? <YesIcon /> : "Yes"}
+      </button>
+    </div>
+  );
 }

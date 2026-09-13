@@ -1,133 +1,133 @@
 *,
 *::before,
 *::after {
-	box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 input,
 select,
 textarea {
-	width: 100%;
-	padding: 12px;
-	font-size: 16px;
-	border-radius: 8px;
-	border: 1px solid var(--border);
-	background: var(--input);
-	color: var(--text);
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--input);
+  color: var(--text);
 }
 
 textarea {
-	min-height: 80px;
-	max-height: 320px;
-	width: 100%;
-	resize: vertical;
+  min-height: 80px;
+  max-height: 320px;
+  width: 100%;
+  resize: vertical;
 }
 
 h1 {
-	font-size: 1.6rem;
-	margin-bottom: 10px;
+  font-size: 1.6rem;
+  margin-bottom: 10px;
 }
 
 h3 {
-	margin-top: 12px;
-	margin-bottom: 6px;
-	font-size: 1rem;
+  margin-top: 12px;
+  margin-bottom: 6px;
+  font-size: 1rem;
 }
 
 a {
-	font-weight: 500;
-	color: #646cff;
-	text-decoration: inherit;
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
 }
 
 a:hover {
-	color: #535bf2;
+  color: #535bf2;
 }
 
 button {
-	background: var(--button);
-	color: var(--text);
-	border: none;
-	border-radius: 8px;
-	padding: 10px 14px;
-	font-size: 14px;
-	cursor: pointer;
-	transition: background 0.15s ease;
-	position: relative;
-	overflow: hidden;
+  background: var(--button);
+  color: var(--text);
+  border: none;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 button::after {
-	content: "";
-	position: absolute;
-	inset: 0;
-	background: white;
-	opacity: 0;
-	transition: opacity 0.2s;
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: white;
+  opacity: 0;
+  transition: opacity 0.2s;
 }
 
 button:not(:disabled):active::after {
-	opacity: 0.15;
+  opacity: 0.15;
 }
 
 button:hover {
-	background: var(--button-hover);
+  background: var(--button-hover);
 }
 
 button:disabled {
-	background: var(--button-hover);
-	cursor: not-allowed;
+  background: var(--button-hover);
+  cursor: not-allowed;
 }
 
 button:focus {
-	outline: none;
+  outline: none;
 }
 
 button:focus-visible {
-	outline: 4px auto -webkit-focus-ring-color;
+  outline: 4px auto -webkit-focus-ring-color;
 }
 
 .card {
-	background: var(--card);
-	border-radius: 14px;
-	padding: 18px;
-	margin-bottom: 18px;
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  background: var(--card);
+  border-radius: 14px;
+  padding: 18px;
+  margin-bottom: 18px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .data-table {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	margin-top: 6px;
-	flex-wrap: wrap;
-	/* allow wrapping if too wide */
-	gap: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6px;
+  flex-wrap: wrap;
+  /* allow wrapping if too wide */
+  gap: 6px;
 }
 
 .data-table button {
-	flex: 1;
-	min-height: 44px;
-	font-weight: 600;
+  flex: 1;
+  min-height: 44px;
+  font-weight: 600;
 }
 
 .data-table span {
-	font-size: 20px;
-	font-weight: bold;
-	min-width: 40px;
-	text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  min-width: 40px;
+  text-align: center;
 }
 
 .slider-container {
-	width: 100%;
-	/* make slider-container fill the container */
-	margin: 12px 0;
-	/* optional spacing */
-	margin-top: 0px;
-	padding: 0px;
-	border: 0px;
+  width: 100%;
+  /* make slider-container fill the container */
+  margin: 12px 0;
+  /* optional spacing */
+  margin-top: 0px;
+  padding: 0px;
+  border: 0px;
 }
 
 .input-error {
-	border: 1px solid var(--error);
+  border: 1px solid var(--error);
 }
