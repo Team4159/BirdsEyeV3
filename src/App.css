@@ -67,7 +67,7 @@ button::after {
 }
 
 button:not(:disabled):active::after {
-    opacity: 0.15;
+    background: var(--button-active);
 }
 
 button:hover {
@@ -75,7 +75,7 @@ button:hover {
 }
 
 button:disabled {
-    background: var(--button-hover);
+    background: var(--button);
     cursor: not-allowed;
 }
 

@@ -51,6 +51,10 @@
     gap: 8px;
 }
 
+.save-button:not(:disabled):hover {
+    background: var(--accent);
+}
+
 .animate-spin {
     animation: spin 1s cubic-bezier(0.17, 0.67, 0.83, 0.67) infinite;
 }

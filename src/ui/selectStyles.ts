@@ -30,7 +30,7 @@ export const selectStyles: StylesConfig<DropdownOption, false> = {
     cursor: "pointer",
     ":active": {
       ...base[":active"],
-      backgroundColor: "var(--button-press)", // Your specific click color
+      backgroundColor: "var(--button-active)", // Your specific click color
     },
   }),
 

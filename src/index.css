@@ -7,7 +7,7 @@
 
     --button: #414141;
     --button-hover: #585858;
-    --button-press: #3c89fe;
+    --button-active: #3c89fe;
 
     --accent: #22c55e;
 }
@@ -19,8 +19,9 @@ body.light {
     --input: #e2e8f0;
     --border: #cbd5f5;
 
-    --button: #e2e8f0;
+    --button: #dcdcdc;
     --button-hover: #cbd5f5;
+    --button-active: #9fc1f5;
 }
 
 body {
