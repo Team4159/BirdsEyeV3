@@ -410,7 +410,7 @@ export default function MatchScoutingPage({
                     })
                   }
                 />
-                <p>Auto Notes</p>
+                <p>Auto Strategy</p>
                 <textarea
                   id="auto-notes-form"
                   value={matchScoutingData.autoNotes}
@@ -420,7 +420,7 @@ export default function MatchScoutingPage({
                       autoNotes: e.target.value,
                     })
                   }
-                  placeholder="Auto notes..."
+                  placeholder="Auto strategy notes..."
                 />
               </div>
 
@@ -481,7 +481,7 @@ export default function MatchScoutingPage({
                   }
                 />
                 <Counter
-                  label="Tech Fouls"
+                  label="Major Fouls"
                   value={matchScoutingData.techFouls}
                   increments={[1]}
                   onChange={(v) =>
@@ -522,6 +522,7 @@ export default function MatchScoutingPage({
                   }
                 ></input>
 
+                <p>Teleop Strategy</p>
                 <textarea
                   id="driver-notes-form"
                   value={matchScoutingData.driverNotes}
@@ -531,7 +532,7 @@ export default function MatchScoutingPage({
                       driverNotes: e.target.value,
                     })
                   }
-                  placeholder="Driver notes..."
+                  placeholder="Teleop strategy notes..."
                 />
               </div>
 
