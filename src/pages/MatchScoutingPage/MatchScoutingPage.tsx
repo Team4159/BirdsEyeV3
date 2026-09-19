@@ -213,50 +213,45 @@ export default function MatchScoutingPage({
   }
 
   //tbaKey effects
-  {
-    const populated = useRef<boolean>(false);
-    useEffect(() => {
-      if (tbaKeyResponse !== null || populated.current) {
-        return;
-      }
-      populateEvents();
-      populated.current = true;
-    }, [tbaKeyResponse, populateEvents]);
-  }
+  const populatedEvents = useRef<boolean>(false);
+  const previousEventCode = useRef<string | null>(null);
+  const previousMatch = useRef<string | null>(null);
+  useEffect(() => {
+    if (tbaKeyResponse !== null || populatedEvents.current) {
+      return;
+    }
+    populatedEvents.current = true;
+    populateEvents();
+  }, [tbaKeyResponse, populateEvents]);
 
   //currentEvent effects
-  {
-    const previousEventCode = useRef<string | null>(null);
-    useEffect(() => {
-      if (tbaKeyResponse !== null || !matchScoutingMetadata.eventCode) {
-        return;
-      }
-      if (
-        previousEventCode.current === null ||
-        previousEventCode.current !== matchScoutingMetadata.eventCode
-      ) {
-        populateMatches();
-      }
-      previousEventCode.current = matchScoutingMetadata.eventCode;
-    }, [matchScoutingMetadata.eventCode, tbaKeyResponse, populateMatches]);
-  }
+  useEffect(() => {
+    if (tbaKeyResponse !== null || matchScoutingMetadata.eventCode === "") {
+      return;
+    }
+    if (
+      previousEventCode.current === null ||
+      previousEventCode.current !== matchScoutingMetadata.eventCode
+    ) {
+      previousMatch.current = null;
+      populateMatches();
+    }
+    previousEventCode.current = matchScoutingMetadata.eventCode;
+  }, [matchScoutingMetadata.eventCode, tbaKeyResponse, populateMatches]);
 
   //currentMatch effects
-  {
-    const previousMatch = useRef<string | null>(null);
-    useLayoutEffect(() => {
-      if (tbaKeyResponse !== null || !matchScoutingMetadata.match) {
-        return;
-      }
-      if (
-        previousMatch.current === null ||
-        previousMatch.current !== matchScoutingMetadata.match
-      ) {
-        populateTeams();
-      }
-      previousMatch.current = matchScoutingMetadata.match;
-    }, [matchScoutingMetadata.match, tbaKeyResponse, populateTeams]);
-  }
+  useLayoutEffect(() => {
+    if (tbaKeyResponse !== null || matchScoutingMetadata.match === "") {
+      return;
+    }
+    if (
+      previousMatch.current === null ||
+      previousMatch.current !== matchScoutingMetadata.match
+    ) {
+      populateTeams();
+    }
+    previousMatch.current = matchScoutingMetadata.match;
+  }, [matchScoutingMetadata.match, tbaKeyResponse, populateTeams]);
 
   return (
     <div className="card match-scouting-page">
