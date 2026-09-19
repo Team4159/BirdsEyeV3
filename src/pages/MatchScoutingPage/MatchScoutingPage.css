@@ -1,3 +1,7 @@
+.match-scouting-page p {
+    margin-bottom: 8px;
+}
+
 .team-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -40,7 +44,7 @@
     border: none;
     border-radius: 12px;
 
-    background: var(--accent);
+    background: var(--is-yes);
     color: white;
 
     margin-top: 16px;
@@ -52,7 +56,7 @@
 }
 
 .save-button:not(:disabled):hover {
-    background: var(--accent);
+    background: color-mix(in oklab, var(--is-yes), white 10%);
 }
 
 .animate-spin {
@@ -67,4 +71,11 @@
     to {
         transform: rotate(360deg);
     }
+}
+
+.text-icon-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
 }

@@ -1,5 +1,5 @@
 import "./MatchScoutingPage.css";
-import { Loader2, Save } from "lucide-react";
+import { Check, Loader2, Save, X } from "lucide-react";
 import {
   useCallback,
   useEffect,
@@ -259,7 +259,7 @@ export default function MatchScoutingPage({
   }
 
   return (
-    <div className="card">
+    <div className="card match-scouting-page">
       <h1>Match Scouting</h1>
       {tbaKeyResponse === null ? (
         <div>
@@ -497,6 +497,10 @@ export default function MatchScoutingPage({
                 <h1>Driver Info</h1>
                 <button
                   type="button"
+                  className="text-icon-button"
+                  style={{
+                    backgroundColor: `var(--${matchScoutingData.defense ? "is-yes" : "is-no"})`,
+                  }}
                   onClick={() =>
                     saveMatchScoutingData({
                       ...matchScoutingData,
@@ -504,7 +508,8 @@ export default function MatchScoutingPage({
                     })
                   }
                 >
-                  {`Defense: ${matchScoutingData.defense}`}
+                  {"Defense: "}
+                  {matchScoutingData.defense ? <Check /> : <X />}
                 </button>
                 <p>{`Driver Rating: ${matchScoutingData.driverRating}`}</p>
                 <input

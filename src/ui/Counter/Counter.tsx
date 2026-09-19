@@ -7,8 +7,8 @@ type CounterProps = {
 
 export function Counter({ label, value, increments, onChange }: CounterProps) {
   return (
-    <div>
-      <span className="text-sm font-medium">{label}</span>
+    <>
+      <p className="text-sm font-medium">{label}</p>
 
       <div className="data-table">
         {/* Decrement buttons */}
@@ -35,6 +35,6 @@ export function Counter({ label, value, increments, onChange }: CounterProps) {
           </button>
         ))}
       </div>
-    </div>
+    </>
   );
 }

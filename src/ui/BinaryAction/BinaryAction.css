@@ -5,17 +5,17 @@
 }
 
 .binary-action-button.yes {
-    background-color: #5bc450;
+    background-color: var(--is-yes);
 }
 
 .binary-action-button.yes:hover {
-    background-color: #73db67;
+    background-color: color-mix(in oklab, var(--is-yes), white 10%);
 }
 
 .binary-action-button.no {
-    background-color: #e04444;
+    background-color: var(--is-no);
 }
 
 .binary-action-button.no:hover {
-    background-color: #f75b5b;
+    background-color: color-mix(in oklab, var(--is-no), white 10%);
 }

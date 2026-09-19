@@ -9,7 +9,8 @@
     --button-hover: #585858;
     --button-active: #3c89fe;
 
-    --accent: #22c55e;
+    --is-yes: #22c55e;
+    --is-no: #e04444;
 }
 
 body.light {
