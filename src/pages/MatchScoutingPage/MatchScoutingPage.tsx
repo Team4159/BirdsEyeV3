@@ -49,7 +49,7 @@ export default function MatchScoutingPage({
   tbaKeyResponse,
   onSubmit,
 }: MatchScoutingPageProps) {
-  const [events, setEvents] = useState<Map<string, string>>(new Map());
+  const [events, setEvents] = useState<Record<string, string>>({});
   const [eventsLoaded, setEventsLoaded] = useState(true);
   const [matches, setMatches] = useState<string[]>([]);
   const [matchesLoaded, setMatchesLoaded] = useState(true);
@@ -131,13 +131,12 @@ export default function MatchScoutingPage({
       const eventsArray: { key: string; name: string }[] = await fetchTbaData(
         tbaKey,
         `/events/${YEAR}`,
-        false,
       );
       setEventsLoaded(true);
       if (eventsArray === null) {
         return;
       }
-      const eventsMap: Map<string, string> = new Map(
+      const eventsMap: Record<string, string> = Object.fromEntries(
         eventsArray.map((event) => [event.key, event.name]),
       );
       setEvents(eventsMap);
@@ -152,7 +151,6 @@ export default function MatchScoutingPage({
       let matches = await fetchTbaData(
         tbaKey,
         `/event/${matchScoutingMetadata.eventCode}/matches/keys`,
-        false,
       );
       setMatchesLoaded(true);
       if (matches === null) {
@@ -264,9 +262,9 @@ export default function MatchScoutingPage({
             <Select
               id="event-form"
               styles={selectStyles}
-              options={[...events.keys()].map((eventCode) => ({
+              options={Object.keys(events).map((eventCode) => ({
                 value: eventCode,
-                label: `${events.get(eventCode)} (${eventCode})`,
+                label: `${events[eventCode]} (${eventCode})`,
               }))}
               filterOption={optionLabelFilter}
               value={
@@ -278,8 +276,8 @@ export default function MatchScoutingPage({
                   : null
               }
               onChange={(selected) => {
-                const eventCode = selected?.value || "";
-                const eventName = events.get(eventCode) || "";
+                const eventCode: string = selected?.value || "";
+                const eventName = events[eventCode] || "";
 
                 saveCurrentEvent(eventCode, eventName);
                 saveCurrentMatch("");
