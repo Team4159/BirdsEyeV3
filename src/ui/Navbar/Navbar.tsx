@@ -2,10 +2,10 @@ import "./Navbar.css";
 import { LogOut, Moon, Search, Settings, Sun } from "lucide-react";
 import type React from "react";
 import { logOut } from "../../firebase/auth";
-import { Page, type PageType } from "../../pages/Page";
+import { Page } from "../../pages/Page";
 
 type NavbarProps = {
-  setCurrentPage: (page: PageType) => void;
+  setCurrentPage: (page: Page) => void;
   darkMode: boolean;
   setDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
 };

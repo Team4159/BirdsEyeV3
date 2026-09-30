@@ -256,80 +256,76 @@ export default function MatchScoutingPage({
       <h1>Match Scouting</h1>
       {tbaKeyResponse === null ? (
         <div>
-          <div>
-            <h3>Event</h3>
+          <h3>Event</h3>
 
-            <Select
-              id="event-form"
-              styles={selectStyles}
-              options={Object.keys(events).map((eventCode) => ({
-                value: eventCode,
-                label: `${events[eventCode]} (${eventCode})`,
-              }))}
-              filterOption={optionLabelFilter}
-              value={
-                matchScoutingMetadata.eventCode
-                  ? {
-                      value: matchScoutingMetadata.eventCode,
-                      label: `${matchScoutingMetadata.eventName} (${matchScoutingMetadata.eventCode})`,
-                    }
-                  : null
-              }
-              onChange={(selected) => {
-                const eventCode: string = selected?.value || "";
-                const eventName = events[eventCode] || "";
+          <Select
+            id="event-form"
+            styles={selectStyles}
+            options={Object.keys(events).map((eventCode) => ({
+              value: eventCode,
+              label: `${events[eventCode]} (${eventCode})`,
+            }))}
+            filterOption={optionLabelFilter}
+            value={
+              matchScoutingMetadata.eventCode
+                ? {
+                    value: matchScoutingMetadata.eventCode,
+                    label: `${matchScoutingMetadata.eventName} (${matchScoutingMetadata.eventCode})`,
+                  }
+                : null
+            }
+            onChange={(selected) => {
+              const eventCode: string = selected?.value || "";
+              const eventName = events[eventCode] || "";
 
-                saveCurrentEvent(eventCode, eventName);
-                saveCurrentMatch("");
-                saveCurrentTeam("");
-                setTeams(createTeamsData());
-              }}
-            />
+              saveCurrentEvent(eventCode, eventName);
+              saveCurrentMatch("");
+              saveCurrentTeam("");
+              setTeams(createTeamsData());
+            }}
+          />
 
-            <span>
-              {eventsLoaded
-                ? matchesLoaded
-                  ? null
-                  : "Matches loading..."
-                : "Events loading..."}
-            </span>
-          </div>
+          <span>
+            {eventsLoaded
+              ? matchesLoaded
+                ? null
+                : "Matches loading..."
+              : "Events loading..."}
+          </span>
 
-          <div>
-            <h3>Match</h3>
+          <h3>Match</h3>
 
-            <Select
-              id="match-form"
-              styles={selectStyles}
-              options={matches.map((match) => ({
-                value: match,
-                label: formatMatchLabel(match),
-              }))}
-              filterOption={optionLabelFilter}
-              value={
-                matchScoutingMetadata.match
-                  ? {
-                      value: matchScoutingMetadata.match,
-                      label: formatMatchLabel(matchScoutingMetadata.match),
-                    }
-                  : null
-              }
-              onChange={(selected) => {
-                const matchValue = selected?.value || "";
+          <Select
+            id="match-form"
+            styles={selectStyles}
+            options={matches.map((match) => ({
+              value: match,
+              label: formatMatchLabel(match),
+            }))}
+            filterOption={optionLabelFilter}
+            value={
+              matchScoutingMetadata.match
+                ? {
+                    value: matchScoutingMetadata.match,
+                    label: formatMatchLabel(matchScoutingMetadata.match),
+                  }
+                : null
+            }
+            onChange={(selected) => {
+              const matchValue = selected?.value || "";
 
-                saveCurrentMatch(matchValue);
-                saveCurrentTeam("");
-              }}
-            />
+              saveCurrentMatch(matchValue);
+              saveCurrentTeam("");
+            }}
+          />
 
-            <span>{matchDataLoaded ? null : "Match data loading..."}</span>
-          </div>
+          <span>{matchDataLoaded ? null : "Match data loading..."}</span>
           {matchScoutingMetadata.eventCode && matchScoutingMetadata.match ? (
-            <div>
+            <>
               {matchDataLoaded &&
                 (teams.redAlliance.length > 0 ||
                   teams.blueAlliance.length > 0) && (
-                  <div>
+                  <>
                     <h3>Team</h3>
 
                     {/* Red Alliance Row */}
@@ -363,131 +359,187 @@ export default function MatchScoutingPage({
                         </button>
                       ))}
                     </div>
-                  </div>
+                  </>
                 )}
 
-              <div>
-                <h1>Autonomous</h1>
-                <Counter
-                  label="Auto Fuels"
-                  value={matchScoutingData.autoFuels}
-                  increments={[1, 5]}
-                  onChange={(v) =>
-                    saveMatchScoutingData({
-                      ...matchScoutingData,
-                      autoFuels: v,
-                    })
-                  }
-                />
-                <p>Climb Status</p>
-                <Select
-                  id="auto-climb-form"
-                  styles={selectStyles}
-                  options={["none", "l1auto"].map((value) => ({
-                    value: value,
-                    label: ClimbLabel[value],
-                  }))}
-                  isSearchable={false}
-                  value={
-                    matchScoutingData.autoClimb
-                      ? {
-                          value: matchScoutingData.autoClimb,
-                          label: ClimbLabel[matchScoutingData.autoClimb],
-                        }
-                      : null
-                  }
-                  onChange={(e) =>
-                    saveMatchScoutingData({
-                      ...matchScoutingData,
-                      autoClimb: e?.value || "none",
-                    })
-                  }
-                />
-                <p>Auto Strategy</p>
-                <textarea
-                  id="auto-notes-form"
-                  value={matchScoutingData.autoNotes}
-                  onChange={(e) =>
-                    saveMatchScoutingData({
-                      ...matchScoutingData,
-                      autoNotes: e.target.value,
-                    })
-                  }
-                  placeholder="Auto strategy notes..."
-                />
-              </div>
+              <h1>Autonomous</h1>
+              <Counter
+                label="Auto Fuels"
+                value={matchScoutingData.autoFuels}
+                increments={[1, 5]}
+                onChange={(v) =>
+                  saveMatchScoutingData({
+                    ...matchScoutingData,
+                    autoFuels: v,
+                  })
+                }
+              />
+              <p>{`Missed: ${matchScoutingData.autoMissed}%`}</p>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={matchScoutingData.autoMissed}
+                className="slider-container"
+                id="auto-missed-slider-container"
+                onChange={(e) =>
+                  saveMatchScoutingData({
+                    ...matchScoutingData,
+                    autoMissed: parseInt(e.target.value, 10),
+                  })
+                }
+              ></input>
+              <p>Climb Status</p>
+              <Select
+                id="auto-climb-form"
+                styles={selectStyles}
+                options={["none", "l1auto"].map((value) => ({
+                  value: value,
+                  label: ClimbLabel[value as keyof typeof ClimbLabel],
+                }))}
+                isSearchable={false}
+                value={
+                  matchScoutingData.autoClimb
+                    ? {
+                        value: matchScoutingData.autoClimb,
+                        label:
+                          ClimbLabel[
+                            matchScoutingData.autoClimb as keyof typeof ClimbLabel
+                          ],
+                      }
+                    : null
+                }
+                onChange={(e) =>
+                  saveMatchScoutingData({
+                    ...matchScoutingData,
+                    autoClimb: e?.value || "none",
+                  })
+                }
+              />
+              <p>Auto Strategy</p>
+              <textarea
+                id="auto-notes-form"
+                value={matchScoutingData.autoNotes}
+                onChange={(e) =>
+                  saveMatchScoutingData({
+                    ...matchScoutingData,
+                    autoNotes: e.target.value,
+                  })
+                }
+                placeholder="Auto strategy notes..."
+              />
 
-              <div>
-                <h1>Teleop</h1>
-                <Counter
-                  label="Teleop Fuels"
-                  value={matchScoutingData.teleopFuels}
-                  increments={[1, 5]}
-                  onChange={(v) =>
-                    saveMatchScoutingData({
-                      ...matchScoutingData,
-                      teleopFuels: v,
-                    })
-                  }
-                />
-              </div>
+              <h1>Teleop</h1>
+              <Counter
+                label="Teleop Fuels"
+                value={matchScoutingData.teleopFuels}
+                increments={[1, 5]}
+                onChange={(v) =>
+                  saveMatchScoutingData({
+                    ...matchScoutingData,
+                    teleopFuels: v,
+                  })
+                }
+              />
+              <p>{`Missed: ${matchScoutingData.teleopMissed}%`}</p>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={matchScoutingData.teleopMissed}
+                className="slider-container"
+                id="teleop-missed-slider-container"
+                onChange={(e) =>
+                  saveMatchScoutingData({
+                    ...matchScoutingData,
+                    teleopMissed: parseInt(e.target.value, 10),
+                  })
+                }
+              ></input>
+              <p>Teleop Strategy</p>
+              <textarea
+                id="driver-notes-form"
+                value={matchScoutingData.driverNotes}
+                onChange={(e) =>
+                  saveMatchScoutingData({
+                    ...matchScoutingData,
+                    driverNotes: e.target.value,
+                  })
+                }
+                placeholder="Teleop strategy notes..."
+              />
 
-              <div>
-                <h1>Endgame</h1>
-                <p>Climb Status</p>
-                <Select
-                  id="endgame-climb-form"
-                  styles={selectStyles}
-                  options={["none", "l1", "l2", "l3"].map((value) => ({
-                    value: value,
-                    label: ClimbLabel[value],
-                  }))}
-                  isSearchable={false}
-                  value={
-                    matchScoutingData.endgameClimb
-                      ? {
-                          value: matchScoutingData.endgameClimb,
-                          label: ClimbLabel[matchScoutingData.endgameClimb],
-                        }
-                      : null
-                  }
-                  onChange={(e) =>
-                    saveMatchScoutingData({
-                      ...matchScoutingData,
-                      endgameClimb: e?.value || "none",
-                    })
-                  }
-                />
-              </div>
+              <h1>Endgame</h1>
+              <p>Climb Status</p>
+              <Select
+                id="endgame-climb-form"
+                styles={selectStyles}
+                options={["none", "l1", "l2", "l3"].map((value) => ({
+                  value: value,
+                  label: ClimbLabel[value as keyof typeof ClimbLabel],
+                }))}
+                isSearchable={false}
+                value={
+                  matchScoutingData.endgameClimb
+                    ? {
+                        value: matchScoutingData.endgameClimb,
+                        label:
+                          ClimbLabel[
+                            matchScoutingData.endgameClimb as keyof typeof ClimbLabel
+                          ],
+                      }
+                    : null
+                }
+                onChange={(e) =>
+                  saveMatchScoutingData({
+                    ...matchScoutingData,
+                    endgameClimb: e?.value || "none",
+                  })
+                }
+              />
 
-              <div>
-                <h1>Fouls</h1>
-                <Counter
-                  label="Fouls"
-                  value={matchScoutingData.fouls}
-                  increments={[1]}
-                  onChange={(v) =>
-                    saveMatchScoutingData({
-                      ...matchScoutingData,
-                      fouls: v,
-                    })
-                  }
-                />
-                <Counter
-                  label="Major Fouls"
-                  value={matchScoutingData.techFouls}
-                  increments={[1]}
-                  onChange={(v) =>
-                    saveMatchScoutingData({
-                      ...matchScoutingData,
-                      techFouls: v,
-                    })
-                  }
-                />
-              </div>
+              <h1>Fouls</h1>
+              <Counter
+                label="Fouls"
+                value={matchScoutingData.fouls}
+                increments={[1]}
+                onChange={(v) =>
+                  saveMatchScoutingData({
+                    ...matchScoutingData,
+                    fouls: v,
+                  })
+                }
+              />
+              <Counter
+                label="Major Fouls"
+                value={matchScoutingData.techFouls}
+                increments={[1]}
+                onChange={(v) =>
+                  saveMatchScoutingData({
+                    ...matchScoutingData,
+                    techFouls: v,
+                  })
+                }
+              />
 
-              <div>
-                <h1>Driver Info</h1>
+              <h1>Driver Info</h1>
+              <div className="button-wrap">
+                <button
+                  type="button"
+                  className="text-icon-button"
+                  style={{
+                    backgroundColor: `var(--${matchScoutingData.brokeDown ? "is-yes" : "is-no"})`,
+                  }}
+                  onClick={() =>
+                    saveMatchScoutingData({
+                      ...matchScoutingData,
+                      brokeDown: !matchScoutingData.brokeDown,
+                    })
+                  }
+                >
+                  {"Robot Broke: "}
+                  {matchScoutingData.brokeDown ? <Check /> : <X />}
+                </button>
                 <button
                   type="button"
                   className="text-icon-button"
@@ -501,38 +553,40 @@ export default function MatchScoutingPage({
                     })
                   }
                 >
-                  {"Defense: "}
+                  {"Played Defense: "}
                   {matchScoutingData.defense ? <Check /> : <X />}
                 </button>
-                <p>{`Driver Rating: ${matchScoutingData.driverRating}`}</p>
-                <input
-                  type="range"
-                  min="1"
-                  max="5"
-                  value={matchScoutingData.driverRating}
-                  className="slider-container"
-                  id="driver-rating-slider-container"
-                  onChange={(e) =>
-                    saveMatchScoutingData({
-                      ...matchScoutingData,
-                      driverRating: parseInt(e.target.value, 10),
-                    })
-                  }
-                ></input>
-
-                <p>Teleop Strategy</p>
-                <textarea
-                  id="driver-notes-form"
-                  value={matchScoutingData.driverNotes}
-                  onChange={(e) =>
-                    saveMatchScoutingData({
-                      ...matchScoutingData,
-                      driverNotes: e.target.value,
-                    })
-                  }
-                  placeholder="Teleop strategy notes..."
-                />
               </div>
+              <p>{`Driver Rating: ${matchScoutingData.driverRating}`}</p>
+              <input
+                type="range"
+                min="1"
+                max="5"
+                value={matchScoutingData.driverRating}
+                className="slider-container"
+                id="driver-rating-slider-container"
+                onChange={(e) =>
+                  saveMatchScoutingData({
+                    ...matchScoutingData,
+                    driverRating: parseInt(e.target.value, 10),
+                  })
+                }
+              ></input>
+              <p>{`Confidence in Data: ${matchScoutingData.scouterConfidence}%`}</p>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={matchScoutingData.scouterConfidence}
+                className="slider-container"
+                id="driver-rating-slider-container"
+                onChange={(e) =>
+                  saveMatchScoutingData({
+                    ...matchScoutingData,
+                    scouterConfidence: parseInt(e.target.value, 10),
+                  })
+                }
+              ></input>
 
               <button
                 type="button"
@@ -558,13 +612,11 @@ export default function MatchScoutingPage({
               <span>
                 {matchScoutingMetadata.team ? null : "Select a team first"}
               </span>
-            </div>
+            </>
           ) : null}
         </div>
       ) : (
-        <div>
-          <p>{tbaKeyResponse}</p>
-        </div>
+        <p>{tbaKeyResponse}</p>
       )}
     </div>
   );

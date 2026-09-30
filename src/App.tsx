@@ -26,7 +26,7 @@ import type {
 } from "./models/MatchScouting";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import MatchScoutingPage from "./pages/MatchScoutingPage/MatchScoutingPage";
-import { Page, type PageType } from "./pages/Page";
+import { Page } from "./pages/Page";
 import SettingsPage from "./pages/SettingsPage/SettingsPage";
 import { verifyTbaKey } from "./tba/verifyTbaKey";
 import { Navbar } from "./ui/Navbar/Navbar";
@@ -144,7 +144,7 @@ async function submitMatchScoutingForm(
 function App() {
   const isInitialized = useRef(false);
   const [autoLoginDone, setAutoLoginDone] = useState(false);
-  const [currentPage, setCurrentPage] = useState<PageType>(Page.Login);
+  const [currentPage, setCurrentPage] = useState<Page>(Page.Login);
   const [tbaKey, setTbaKey] = useState(() => {
     return localStorage.getItem("tbaKey") || "";
   });
