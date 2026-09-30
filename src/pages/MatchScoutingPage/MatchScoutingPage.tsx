@@ -456,18 +456,6 @@ export default function MatchScoutingPage({
                   })
                 }
               ></input>
-              <p>Teleop Strategy</p>
-              <textarea
-                id="driver-notes-form"
-                value={matchScoutingData.driverNotes}
-                onChange={(e) =>
-                  saveMatchScoutingData({
-                    ...matchScoutingData,
-                    driverNotes: e.target.value,
-                  })
-                }
-                placeholder="Teleop strategy notes..."
-              />
 
               <h1>Endgame</h1>
               <p>Climb Status</p>
@@ -572,6 +560,19 @@ export default function MatchScoutingPage({
                   })
                 }
               ></input>
+              <p>Driver Strategy</p>
+              <textarea
+                id="driver-notes-form"
+                value={matchScoutingData.driverNotes}
+                onChange={(e) =>
+                  saveMatchScoutingData({
+                    ...matchScoutingData,
+                    driverNotes: e.target.value,
+                  })
+                }
+                placeholder="Driver notes..."
+              />
+
               <p>{`Confidence in Data: ${matchScoutingData.scouterConfidence}%`}</p>
               <input
                 type="range"
