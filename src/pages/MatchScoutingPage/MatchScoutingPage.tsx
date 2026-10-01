@@ -210,6 +210,40 @@ export default function MatchScoutingPage({
     saveMatchScoutingData(structuredClone(matchScoutingDataDefault));
   }
 
+  function resetMatchScoutingDataIfOutdated() {
+    const currentKeys = Object.keys(matchScoutingData);
+    const defaultKeys = Object.keys(matchScoutingDataDefault);
+    if (currentKeys.length !== defaultKeys.length) {
+      return;
+    }
+    let keysMatch = true;
+    for (const key of currentKeys) {
+      if (matchScoutingDataDefault[key] === null) {
+        keysMatch = false;
+        break;
+      }
+    }
+    if (!keysMatch) {
+      return;
+    }
+    let typesMatch = true;
+    for (const key of Object.keys(matchScoutingData)) {
+      if (typeof matchScoutingData[key] === typeof matchScoutingDataDefault[key]) {
+        typesMatch = false;
+        break;
+      }
+    }
+    if (!typesMatch) {
+      return;
+    }
+    resetMatchScoutingData;
+  }
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: on startup
+  useEffect(() => {
+    resetMatchScoutingDataIfOutdated();
+  }, []);
+
   //tbaKey effects
   const populatedEvents = useRef<boolean>(false);
   const previousEventCode = useRef<string | null>(null);
