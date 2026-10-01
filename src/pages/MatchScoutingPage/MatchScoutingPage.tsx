@@ -218,7 +218,8 @@ export default function MatchScoutingPage({
     }
     let keysMatch = true;
     for (const key of currentKeys) {
-      if (matchScoutingDataDefault[key] === null) {
+      // biome-ignore lint/suspicious/noExplicitAny: needs to be any
+      if ((matchScoutingDataDefault as Record<string, any>)[key] === null) {
         keysMatch = false;
         break;
       }
@@ -228,7 +229,8 @@ export default function MatchScoutingPage({
     }
     let typesMatch = true;
     for (const key of Object.keys(matchScoutingData)) {
-      if (typeof matchScoutingData[key] === typeof matchScoutingDataDefault[key]) {
+      // biome-ignore lint/suspicious/noExplicitAny: needs to be any
+      if (typeof (matchScoutingData as Record<string, any>)[key] !== typeof (matchScoutingDataDefault as Record<string, any>)[key]) {
         typesMatch = false;
         break;
       }
