@@ -210,11 +210,11 @@ export default function MatchScoutingPage({
     saveMatchScoutingData(structuredClone(matchScoutingDataDefault));
   }
 
-  function resetMatchScoutingDataIfOutdated() {
+  function isMatchScoutingDataOutdated() {
     const currentKeys = Object.keys(matchScoutingData);
     const defaultKeys = Object.keys(matchScoutingDataDefault);
     if (currentKeys.length !== defaultKeys.length) {
-      return;
+      return true;
     }
     let keysMatch = true;
     for (const key of currentKeys) {
@@ -225,10 +225,10 @@ export default function MatchScoutingPage({
       }
     }
     if (!keysMatch) {
-      return;
+      return true;
     }
     let typesMatch = true;
-    for (const key of Object.keys(matchScoutingData)) {
+    for (const key of currentKeys) {
       // biome-ignore lint/suspicious/noExplicitAny: needs to be any
       if (typeof (matchScoutingData as Record<string, any>)[key] !== typeof (matchScoutingDataDefault as Record<string, any>)[key]) {
         typesMatch = false;
@@ -236,14 +236,16 @@ export default function MatchScoutingPage({
       }
     }
     if (!typesMatch) {
-      return;
+      return true;
     }
-    resetMatchScoutingData;
+    return false;
   }
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: on startup
+  // biome-ignore lint/correctness/useExhaustiveDependencies: runs once on startup
   useEffect(() => {
-    resetMatchScoutingDataIfOutdated();
+    if (isMatchScoutingDataOutdated()) {
+      resetMatchScoutingData();
+    }
   }, []);
 
   //tbaKey effects
