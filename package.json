@@ -21,8 +21,8 @@
     "react-select": "^5.10.2"
   },
   "devDependencies": {
-    "@babel/core": "^8.0.5",
-    "@biomejs/biome": "^2.5.13",
+    "@babel/core": "^8.0.7",
+    "@biomejs/biome": "^2.5.15",
     "@rolldown/plugin-babel": "^0.2.4",
     "@types/node": "^22.20.2",
     "@types/react": "^19.3.0",
