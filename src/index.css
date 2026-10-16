@@ -11,6 +11,8 @@
 
     --is-yes: #22c55e;
     --is-no: #e04444;
+
+    --card-max-width: 600px;
 }
 
 body.light {

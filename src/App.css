@@ -95,6 +95,7 @@ button:focus-visible {
     margin-bottom: 18px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     align-content: start;
+    max-width: var(--card-max-width);
 }
 
 .data-table {
