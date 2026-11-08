@@ -12,6 +12,7 @@ export default defineConfig({
   ],
   base: "/BirdsEyeV3",
   build: {
+    chunkSizeWarningLimit: 700,
     rolldownOptions: {
       output: {
         codeSplitting: {
@@ -19,6 +20,10 @@ export default defineConfig({
             {
               name: "firebase",
               test: /node_modules\/firebase/,
+            },
+            {
+              name: "react-select",
+              test: /node_modules\/react-select/,
             },
           ],
         },
